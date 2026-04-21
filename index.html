@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Green Style — La Historia</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --green-dark: #1c2b1a;
+    --green-mid: #4a7030;
+    --green-light: #8aaa60;
+    --green-pale: #c8dca0;
+    --cream: #f5f0e4;
+    --cream-dark: #ece5d0;
+    --gold: #c8a840;
+    --text: #2a3820;
+    --muted: #5a6a4a;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--cream);
+    color: var(--text);
+    font-family: 'Cormorant Garamond', serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: var(--green-dark);
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 3rem 1.5rem 5rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 70% 50% at 50% 0%, rgba(106,144,64,0.25) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 40% at 80% 100%, rgba(200,168,64,0.08) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .hero-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.4em;
+    color: var(--green-light);
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    position: relative;
+  }
+
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(72px, 22vw, 120px);
+    font-weight: 700;
+    font-style: italic;
+    color: var(--cream);
+    line-height: 0.88;
+    position: relative;
+    letter-spacing: -2px;
+  }
+
+  .hero-title .accent { color: var(--green-light); }
+
+  .hero-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 2rem 0 1.5rem;
+    position: relative;
+    width: 100%;
+    max-width: 340px;
+  }
+
+  .hero-divider-line {
+    flex: 1;
+    height: 0.5px;
+    background: var(--green-light);
+    opacity: 0.4;
+  }
+
+  .hero-divider span {
+    color: var(--green-light);
+    font-size: 14px;
+    opacity: 0.7;
+  }
+
+  .hero-subtitle {
+    font-size: 18px;
+    font-style: italic;
+    color: var(--green-pale);
+    letter-spacing: 0.03em;
+    position: relative;
+  }
+
+  .hero-tagline {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--green-light);
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    margin-top: 1.5rem;
+    opacity: 0.7;
+    position: relative;
+  }
+
+  .scroll-cue {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    color: var(--green-light);
+    text-transform: uppercase;
+    opacity: 0.5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .scroll-arrow {
+    width: 1px;
+    height: 36px;
+    background: linear-gradient(to bottom, var(--green-light), transparent);
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.2; transform: scaleY(0.8); }
+    50% { opacity: 0.6; transform: scaleY(1); }
+  }
+
+  /* ── SECTIONS ── */
+  .section {
+    padding: 4rem 1.5rem;
+    max-width: 560px;
+    margin: 0 auto;
+  }
+
+  .section-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.4em;
+    color: var(--green-mid);
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-tag::before {
+    content: '';
+    display: block;
+    width: 20px;
+    height: 0.5px;
+    background: var(--green-mid);
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(30px, 8vw, 42px);
+    font-weight: 700;
+    font-style: italic;
+    color: var(--green-dark);
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+  }
+
+  .section-body {
+    font-size: 18px;
+    line-height: 1.8;
+    color: var(--muted);
+  }
+
+  .section-body p + p { margin-top: 1.1rem; }
+
+  .section-body strong {
+    color: var(--green-dark);
+    font-weight: 600;
+  }
+
+  .section-body em { color: var(--green-mid); font-style: italic; }
+
+  /* ── DARK SECTION ── */
+  .section-dark {
+    background: var(--green-dark);
+    padding: 4rem 1.5rem;
+  }
+
+  .section-dark .inner {
+    max-width: 560px;
+    margin: 0 auto;
+  }
+
+  .section-dark .section-tag { color: var(--green-light); }
+  .section-dark .section-tag::before { background: var(--green-light); }
+  .section-dark .section-title { color: var(--cream); }
+  .section-dark .section-body { color: var(--green-pale); }
+  .section-dark .section-body strong { color: var(--cream); }
+
+  /* ── DIVIDER ── */
+  .divider {
+    height: 0.5px;
+    background: rgba(106,144,64,0.2);
+    max-width: 560px;
+    margin: 0 auto;
+  }
+
+  /* ── QUOTE BLOCK ── */
+  .quote-block {
+    background: var(--green-dark);
+    border-left: 3px solid var(--green-light);
+    padding: 1.5rem 1.5rem 1.5rem 1.25rem;
+    margin: 2rem 0;
+    border-radius: 0 4px 4px 0;
+  }
+
+  .quote-text {
+    font-size: 22px;
+    font-style: italic;
+    color: var(--cream);
+    line-height: 1.6;
+  }
+
+  .quote-attr {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    color: var(--green-light);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-top: 10px;
+  }
+
+  /* ── INGREDIENTS GRID ── */
+  .ingredients-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 1.5rem;
+  }
+
+  .ing-card {
+    background: rgba(106,144,64,0.08);
+    border: 0.5px solid rgba(106,144,64,0.3);
+    border-radius: 3px;
+    padding: 12px 14px;
+  }
+
+  .ing-card .qty {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--green-mid);
+    letter-spacing: 0.1em;
+    display: block;
+    margin-bottom: 2px;
+  }
+
+  .ing-card .name {
+    font-size: 17px;
+    font-style: italic;
+    color: var(--green-dark);
+  }
+
+  /* ── STEPS ── */
+  .steps { margin-top: 1.5rem; display: flex; flex-direction: column; gap: 18px; }
+
+  .step { display: flex; gap: 16px; align-items: flex-start; }
+
+  .step-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 34px;
+    font-style: italic;
+    color: var(--green-light);
+    line-height: 1;
+    flex-shrink: 0;
+    width: 28px;
+    text-align: right;
+    opacity: 0.55;
+    margin-top: -2px;
+  }
+
+  .step-text {
+    font-size: 17px;
+    color: var(--green-pale);
+    line-height: 1.65;
+    padding-top: 4px;
+  }
+
+  .step-text strong { color: var(--cream); }
+
+  /* ── FLAVOR TAGS ── */
+  .flavor-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 1.2rem; }
+
+  .flavor-tag {
+    background: rgba(106,144,64,0.1);
+    border: 0.5px solid rgba(106,144,64,0.35);
+    border-radius: 2px;
+    font-size: 15px;
+    font-style: italic;
+    color: var(--green-mid);
+    padding: 4px 12px;
+  }
+
+  /* ── CREAM ACCENT SECTION ── */
+  .section-cream {
+    background: var(--cream-dark);
+    padding: 4rem 1.5rem;
+    border-top: 0.5px solid rgba(106,144,64,0.2);
+    border-bottom: 0.5px solid rgba(106,144,64,0.2);
+  }
+
+  .section-cream .inner {
+    max-width: 560px;
+    margin: 0 auto;
+  }
+
+  /* ── FUN FACT PILL ── */
+  .fun-fact {
+    background: rgba(200,168,64,0.12);
+    border: 0.5px solid rgba(200,168,64,0.4);
+    border-radius: 4px;
+    padding: 14px 18px;
+    margin-top: 1.5rem;
+    font-size: 16px;
+    color: #6a5010;
+    line-height: 1.6;
+  }
+
+  .fun-fact .label {
+    font-family: 'DM Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: #9a7820;
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--green-dark);
+    text-align: center;
+    padding: 3rem 1.5rem;
+  }
+
+  .footer-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-style: italic;
+    color: var(--cream);
+    margin-bottom: 0.5rem;
+  }
+
+  .footer-sub {
+    font-size: 15px;
+    color: var(--green-pale);
+    font-style: italic;
+    margin-bottom: 1.5rem;
+  }
+
+  .footer-line {
+    width: 60px;
+    height: 0.5px;
+    background: var(--green-light);
+    opacity: 0.4;
+    margin: 1.5rem auto;
+  }
+
+  .footer-meta {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    color: var(--green-light);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    opacity: 0.6;
+    line-height: 2;
+  }
+
+  /* ── PHOTO HERO ── */
+  .photo-hero {
+    width: 100%;
+    max-height: 420px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .photo-hero img {
+    width: 100%;
+    height: 420px;
+    object-fit: cover;
+    object-position: center 15%;
+    display: block;
+  }
+
+  .photo-hero::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 120px;
+    background: linear-gradient(to bottom, transparent, var(--cream));
+  }
+
+  .photo-hero.dark-after::after {
+    background: linear-gradient(to bottom, transparent, var(--green-dark));
+  }
+
+</style>
+</head>
+<body>
+
+  <!-- ═══ HERO ═══ -->
+  <section class="hero">
+    <p class="hero-eyebrow">Concurso de Coctelería · Mallorca 2026</p>
+    <h1 class="hero-title">Green<br><span class="accent">Style</span></h1>
+    <div class="hero-divider">
+      <div class="hero-divider-line"></div>
+      <span>✦</span>
+      <div class="hero-divider-line"></div>
+    </div>
+    <p class="hero-subtitle">Vodka · Licor de Pistacho · Maracuyá · Coco</p>
+    <p class="hero-tagline">Una historia de sabores desde Mallorca</p>
+    <div class="scroll-cue">
+      Desplázate
+      <div class="scroll-arrow"></div>
+    </div>
+  </section>
+
+  <!-- ═══ FOTO ═══ -->
+  <div class="photo-hero">
+    <img src="Foto_Cocktail.jpeg" alt="Cóctel Green Style" />
+  </div>
+
+  <!-- ═══ LA INSPIRACIÓN ═══ -->
+  <section class="section">
+    <p class="section-tag">El origen</p>
+    <h2 class="section-title">Todo empezó en Marratxí</h2>
+    <div class="section-body">
+      <p>
+        Mallorca huele a pino, a mar y a ensaimada recién hecha. Cuando uno se plantea crear un cóctel que represente todo eso… lo normal sería tirar de hierbas locales y palo. Pero no. <strong>Aquí decidimos ir por otro camino.</strong>
+      </p>
+      <p>
+        La inspiración llegó mirando los colores de la Serra de Tramuntana al atardecer: ese verde profundo que se mezcla con el oro del sol. El pistacho no es un ingrediente cualquiera, es el color de la isla cuando la luz pega de lado.
+      </p>
+      <p>
+        El nombre <em>Green Style</em> no es un capricho. Es una actitud. Es llegar al bar con ganas de sorprender, de mezclar lo que nadie mezclaría, y de que el resultado tenga sentido. Como los mallorquines: tranquilos por fuera, creativos por dentro.
+      </p>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ═══ EL CÓCTEL ═══ -->
+  <section class="section">
+    <p class="section-tag">Los ingredientes</p>
+    <h2 class="section-title">¿Qué hay dentro?</h2>
+    <div class="section-body">
+      <p>Cada ingrediente tiene su razón de ser. Nada está aquí por accidente.</p>
+    </div>
+    <div class="ingredients-grid">
+      <div class="ing-card">
+        <span class="qty">35 ml</span>
+        <span class="name">Vodka</span>
+      </div>
+      <div class="ing-card">
+        <span class="qty">40 ml</span>
+        <span class="name">Licor de pistacho</span>
+      </div>
+      <div class="ing-card">
+        <span class="qty">20 ml</span>
+        <span class="name">Jarabe de vainilla</span>
+      </div>
+      <div class="ing-card">
+        <span class="qty">15 ml</span>
+        <span class="name">Zumo de lima</span>
+      </div>
+      <div class="ing-card">
+        <span class="qty">15 ml</span>
+        <span class="name">Puré de coco</span>
+      </div>
+      <div class="ing-card">
+        <span class="qty">50 ml</span>
+        <span class="name">Zumo de maracuyá</span>
+      </div>
+    </div>
+
+    <div class="fun-fact">
+      <span class="label">Curiosidad</span>
+      El maracuyá y el coco juntos son la combinación más tropical que puedes encontrar... y aun así funcionan perfectamente en una copa servida en un hotel de Mallorca. El Mediterráneo y el Caribe, sin billete de avión.
+    </div>
+  </section>
+
+  <!-- ═══ DARK: PREPARACIÓN ═══ -->
+  <section class="section-dark">
+    <div class="inner">
+      <p class="section-tag">El ritual</p>
+      <h2 class="section-title">Cómo se hace</h2>
+      <div class="section-body">
+        <p>La coctelería es teatro. Cada paso tiene su momento.</p>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <span class="step-num">1</span>
+          <p class="step-text"><strong>El borde:</strong> Bordeamos la copa con azúcar moreno. Así el primer contacto con los labios ya es dulce. Buena señal.</p>
+        </div>
+        <div class="step">
+          <span class="step-num">2</span>
+          <p class="step-text"><strong>La mezcla:</strong> Todos los ingredientes van a la coctelera junto a 3 cubitos de hielo. Sin prisa, pero sin pausa.</p>
+        </div>
+        <div class="step">
+          <span class="step-num">3</span>
+          <p class="step-text"><strong>El agitado:</strong> 15 segundos de agitación enérgica. Esto no es opcional. Aquí está el secreto de la textura cremosa.</p>
+        </div>
+        <div class="step">
+          <span class="step-num">4</span>
+          <p class="step-text"><strong>El servicio:</strong> Colamos y servimos en la copa percepción de 25 cl, ya preparada.</p>
+        </div>
+        <div class="step">
+          <span class="step-num">5</span>
+          <p class="step-text"><strong>El toque final:</strong> Rallamos lima, naranja y pistacho sobre la capa superior. El aroma que sube de la copa en ese momento es, sencillamente, increíble.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ DECORACIÓN ═══ -->
+  <section class="section-cream">
+    <div class="inner">
+      <p class="section-tag">La presentación</p>
+      <h2 class="section-title">Que entre por los ojos</h2>
+      <div class="section-body">
+        <p>
+          Un cóctel que no entra por la vista tiene la mitad del trabajo perdido. <strong>La decoración no es accesorio, es parte del sabor.</strong>
+        </p>
+        <p>
+          Una rama de hierbabuena dentro de un giro de naranja en el borde. Un par de pistachos enteros en el centro, como si flotaran. Y la ralladura de lima, naranja y pistacho esparcida sobre la superficie, creando ese efecto visual que hace que la gente diga "espera, déjame hacerle una foto antes".
+        </p>
+      </div>
+
+      <div class="quote-block">
+        <p class="quote-text">"Un buen cóctel se bebe dos veces: primero con los ojos, luego con la boca."</p>
+        <p class="quote-attr">— Filosofía Green Style</p>
+      </div>
+
+      <div class="section-body" style="margin-top:0;">
+        <p>El resultado es una copa que parece sacada de un jardín mallorquín un domingo por la mañana. Verde, elegante, con ese punto de descaro tropical que nadie esperaba.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ EL SABOR ═══ -->
+  <section class="section">
+    <p class="section-tag">El perfil</p>
+    <h2 class="section-title">¿A qué sabe Mallorca?</h2>
+    <div class="section-body">
+      <p>
+        El primer sorbo es cremoso y suave, con el pistacho como protagonista. Luego aparece el maracuyá, fresco y ácido, como un golpe de brisa marina. El coco lo redondea todo, y la lima limpia el paladar justo a tiempo para que quieras otro trago.
+      </p>
+      <p>
+        Es complejo sin ser pretencioso. Tropical sin ser ruidoso. Mallorquín por carácter.
+      </p>
+    </div>
+    <div class="flavor-tags">
+      <span class="flavor-tag">Tropical</span>
+      <span class="flavor-tag">Cremoso</span>
+      <span class="flavor-tag">Cítrico</span>
+      <span class="flavor-tag">Floral</span>
+      <span class="flavor-tag">Fresco</span>
+      <span class="flavor-tag">Elegante</span>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ═══ MALLORCA ═══ -->
+  <section class="section">
+    <p class="section-tag">El alma</p>
+    <h2 class="section-title">Hecho en Mallorca,<br>con lo que hay</h2>
+    <div class="section-body">
+      <p>
+        Marratxí no tiene puerto. No tiene playa. Pero tiene carácter. Y los que hemos crecido aquí sabemos que la isla se lleva dentro, aunque no seas de los que lo gritan.
+      </p>
+      <p>
+        Este cóctel es una versión de eso: <strong>un producto local con alma abierta al mundo.</strong> Como el mallorquín que habla cuatro idiomas pero prefiere el pan con aceite de siempre.
+      </p>
+      <p>
+        El <em>Green Style</em> no busca copiar nada. Busca ser él mismo. Y si encima sabe bien y gana un concurso, pues mejor que mejor.
+      </p>
+    </div>
+  </section>
+
+  <!-- ═══ FOOTER ═══ -->
+  <footer>
+    <p class="footer-title">Green Style</p>
+    <p class="footer-sub">Un cóctel de Mallorca para el mundo</p>
+    <div class="footer-line"></div>
+    <p class="footer-meta">
+      Concurso de Coctelería · 13 de Mayo de 2026<br>
+      Vodka · Pistacho · Maracuyá · Coco<br>
+      Hecho en Mallorca con amor y sin prisa
+    </p>
+  </footer>
+
+</body>
+</html>
