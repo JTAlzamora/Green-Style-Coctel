@@ -28,24 +28,25 @@ html, body {
   user-select:none;
 }
 
-/* ══ ROTATE ══ */
-#rotate-screen {
+/* ══ ROTATE / FULLSCREEN GATE ══ */
+#gate {
   position:fixed; inset:0; z-index:999;
   background:#0e1a0c;
   display:flex; flex-direction:column;
   align-items:center; justify-content:center;
-  gap:24px;
+  gap:20px;
   transition:opacity 0.6s ease;
 }
-#rotate-screen.hidden { opacity:0; pointer-events:none; }
+#gate.hidden { opacity:0; pointer-events:none; }
 
-.rotate-title {
+.gate-title {
   font-family:'Playfair Display',serif;
   font-size:38px; font-style:italic;
   color:var(--cream); text-align:center;
 }
-.rotate-title span { color:var(--gl); }
+.gate-title span { color:var(--gl); }
 
+/* Phone icon */
 .rotate-icon {
   width:60px; height:60px;
   border:2px solid var(--gl);
@@ -58,8 +59,7 @@ html, body {
   position:absolute;
   bottom:6px; left:50%; transform:translateX(-50%);
   width:6px; height:6px;
-  background:var(--gl);
-  border-radius:50%;
+  background:var(--gl); border-radius:50%;
 }
 @keyframes rotPhone {
   0%,35%  { transform:rotate(0deg); }
@@ -72,6 +72,42 @@ html, body {
   color:var(--gl); text-transform:uppercase;
   text-align:center; line-height:2;
 }
+
+/* Fullscreen button (shown after rotation phase) */
+#fs-btn {
+  display:none;
+  align-items:center; gap:10px;
+  background:none;
+  border:1px solid rgba(138,170,96,0.5);
+  border-radius:4px;
+  padding:12px 24px;
+  cursor:pointer;
+  transition:border-color 0.2s, background 0.2s;
+  margin-top:8px;
+}
+#fs-btn:hover { border-color:var(--gl); background:rgba(138,170,96,0.08); }
+#fs-btn.visible { display:flex; }
+
+#fs-btn svg { flex-shrink:0; }
+
+.fs-btn-label {
+  font-family:'DM Mono',monospace;
+  font-size:10px; letter-spacing:0.3em;
+  color:var(--gl); text-transform:uppercase;
+}
+
+.skip-link {
+  font-family:'DM Mono',monospace;
+  font-size:9px; letter-spacing:0.25em;
+  color:rgba(138,170,96,0.35);
+  text-transform:uppercase;
+  cursor:pointer;
+  border:none; background:none;
+  text-decoration:underline;
+  margin-top:4px;
+  transition:color 0.2s;
+}
+.skip-link:hover { color:rgba(138,170,96,0.6); }
 
 /* ══ BOOK WRAPPER ══ */
 #book-wrapper {
@@ -97,7 +133,7 @@ html, body {
   z-index:100; pointer-events:none;
 }
 
-/* ══ PAGES CONTAINER ══ */
+/* ══ PAGES ══ */
 #pages {
   display:flex;
   width:100%; height:100%;
@@ -118,7 +154,6 @@ html, body {
   padding:4vh 4vw;
 }
 
-/* Themes */
 .page.dark  { background:var(--gd); }
 .page.light { background:var(--cream); }
 .page.mid   { background:var(--cream2); }
@@ -132,14 +167,11 @@ html, body {
   margin-bottom:1.2vh;
   display:flex; align-items:center; gap:8px;
 }
-.eyebrow::before {
-  content:''; display:block;
-  width:14px; height:0.5px;
-}
+.eyebrow::before { content:''; display:block; width:14px; height:0.5px; }
 .dark .eyebrow,  .green .eyebrow { color:var(--gl); }
 .dark .eyebrow::before, .green .eyebrow::before { background:var(--gl); }
 .light .eyebrow, .mid .eyebrow   { color:var(--gm); }
-.light .eyebrow::before, .mid .eyebrow::before { background:var(--gm); }
+.light .eyebrow::before, .mid .eyebrow::before   { background:var(--gm); }
 
 /* Title */
 .pg-title {
@@ -150,13 +182,9 @@ html, body {
 }
 .dark .pg-title,  .green .pg-title { color:var(--cream); }
 .light .pg-title, .mid .pg-title   { color:var(--gd); }
-.pg-title .acc { color:var(--gl); }
 
 /* Body */
-.pg-body {
-  font-size:clamp(11px,1.8vw,15px);
-  line-height:1.75;
-}
+.pg-body { font-size:clamp(11px,1.8vw,15px); line-height:1.75; }
 .dark .pg-body,  .green .pg-body { color:var(--gp); }
 .light .pg-body, .mid .pg-body   { color:var(--muted); }
 .pg-body p+p { margin-top:1.1vh; }
@@ -184,10 +212,7 @@ html, body {
 }
 
 /* Ingredients */
-.ing-grid {
-  display:grid; grid-template-columns:1fr 1fr;
-  gap:6px; margin-top:1.4vh;
-}
+.ing-grid { display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-top:1.4vh; }
 .ing-card {
   background:rgba(138,170,96,0.1);
   border:0.5px solid rgba(138,170,96,0.3);
@@ -198,10 +223,7 @@ html, body {
   font-size:clamp(7px,1vw,9px);
   color:var(--gl); letter-spacing:0.1em; display:block;
 }
-.ing-card .nm {
-  font-style:italic; color:var(--cream);
-  font-size:clamp(11px,1.7vw,14px);
-}
+.ing-card .nm { font-style:italic; color:var(--cream); font-size:clamp(11px,1.7vw,14px); }
 
 /* Steps */
 .steps { margin-top:1.4vh; display:flex; flex-direction:column; gap:1vh; }
@@ -211,11 +233,7 @@ html, body {
   color:var(--gl); opacity:0.5; flex-shrink:0; line-height:1;
   font-size:clamp(20px,3vw,28px);
 }
-.step-t {
-  color:var(--gp); line-height:1.5;
-  font-size:clamp(10px,1.6vw,13px);
-  padding-top:3px;
-}
+.step-t { color:var(--gp); line-height:1.5; font-size:clamp(10px,1.6vw,13px); padding-top:3px; }
 .step-t strong { color:var(--cream); }
 
 /* Flavor tags */
@@ -229,15 +247,8 @@ html, body {
 }
 
 /* Quote */
-.quote {
-  border-left:2px solid var(--gl);
-  padding:1.2vh 0 1.2vh 1.5vw;
-  margin:1.5vh 0;
-}
-.quote-t {
-  font-style:italic; color:var(--cream);
-  line-height:1.6; font-size:clamp(11px,1.8vw,15px);
-}
+.quote { border-left:2px solid var(--gl); padding:1.2vh 0 1.2vh 1.5vw; margin:1.5vh 0; }
+.quote-t { font-style:italic; color:var(--cream); line-height:1.6; font-size:clamp(11px,1.8vw,15px); }
 .quote-a {
   font-family:'DM Mono',monospace;
   font-size:clamp(7px,1vw,9px);
@@ -263,25 +274,77 @@ html, body {
   cursor:pointer; pointer-events:all;
   transition:color 0.2s, border-color 0.2s;
 }
-.nbtn:active  { color:var(--gl); border-color:var(--gl); }
-.nbtn:disabled{ opacity:0.2; pointer-events:none; }
+.nbtn:hover  { color:var(--gl); border-color:var(--gl); }
+.nbtn:active { color:var(--gl); border-color:var(--gl); }
+.nbtn:disabled { opacity:0.2; pointer-events:none; }
 
-.dots { display:flex; gap:6px; }
+/* Desktop arrow hints */
+.key-hint {
+  font-family:'DM Mono',monospace;
+  font-size:8px; letter-spacing:0.2em;
+  color:rgba(138,170,96,0.3);
+  text-transform:uppercase;
+  display:none;
+  pointer-events:none;
+}
+
+.dots { display:flex; gap:6px; align-items:center; }
 .dot  { width:5px; height:5px; border-radius:50%; background:rgba(138,170,96,0.22); transition:background 0.3s; }
 .dot.on { background:var(--gl); }
+
+/* Desktop: show keyboard hints, hide rotate gate */
+@media (hover: hover) and (pointer: fine) {
+  .key-hint { display:block; }
+}
+
+/* ══ DESKTOP CLICK ZONES ══ */
+.click-zone {
+  position:fixed; top:0; bottom:40px;
+  width:12vw; z-index:150;
+  cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  opacity:0;
+  transition:opacity 0.2s;
+}
+.click-zone:hover { opacity:1; }
+.click-zone.left  { left:0; }
+.click-zone.right { right:0; }
+
+.click-zone-arrow {
+  font-family:'Playfair Display',serif;
+  font-style:italic;
+  font-size:28px;
+  color:rgba(138,170,96,0.6);
+  text-shadow:0 0 20px rgba(0,0,0,0.5);
+}
 </style>
 </head>
 <body>
 
-<!-- ROTATE -->
-<div id="rotate-screen">
-  <div class="rotate-title">Green <span>Style</span></div>
-  <div class="rotate-icon"></div>
-  <div class="rotate-text">Gira el móvil<br>para la mejor experiencia</div>
+<!-- ══ GATE: ROTATE + FULLSCREEN ══ -->
+<div id="gate">
+  <div class="gate-title">Green <span>Style</span></div>
+  <div class="rotate-icon" id="rotate-icon"></div>
+  <div class="rotate-text" id="rotate-text">Gira el móvil<br>para la mejor experiencia</div>
+
+  <!-- Shown after 3s -->
+  <button id="fs-btn" onclick="enterFullscreen()">
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M1 5V1H5M13 1H17V5M17 13V17H13M5 17H1V13" stroke="#8aaa60" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <span class="fs-btn-label">Ver en pantalla completa</span>
+  </button>
+
+  <button class="skip-link" id="skip-btn" onclick="showBook()">Continuar sin pantalla completa</button>
 </div>
 
-<!-- BOOK -->
+<!-- ══ BOOK ══ -->
 <div id="book-wrapper">
+
+  <!-- Desktop click zones -->
+  <div class="click-zone left"  onclick="go(cur-1)"><div class="click-zone-arrow">‹</div></div>
+  <div class="click-zone right" onclick="go(cur+1)"><div class="click-zone-arrow">›</div></div>
+
   <div id="book">
     <div id="pages">
 
@@ -414,57 +477,139 @@ html, body {
         </div>
       </div>
 
-    </div>
-  </div>
+    </div><!-- /pages -->
+  </div><!-- /book -->
 
   <!-- NAV -->
   <div id="nav">
     <button class="nbtn" id="bp" disabled>← Ant.</button>
-    <div class="dots" id="dots"></div>
+    <div class="dots" id="dots">
+      <span class="key-hint">← →</span>
+    </div>
     <button class="nbtn" id="bn">Sig. →</button>
   </div>
-</div>
+
+</div><!-- /book-wrapper -->
 
 <script>
 const N = 5;
 let cur = 0, sx = 0;
+let gatePhase = 'rotate'; // 'rotate' | 'fullscreen' | 'done'
 
-const pages = document.getElementById('pages');
-const bp = document.getElementById('bp');
-const bn = document.getElementById('bn');
-const dotsEl = document.getElementById('dots');
-const rot = document.getElementById('rotate-screen');
-const bw = document.getElementById('book-wrapper');
+const pages   = document.getElementById('pages');
+const bp      = document.getElementById('bp');
+const bn      = document.getElementById('bn');
+const dotsEl  = document.getElementById('dots');
+const gate    = document.getElementById('gate');
+const bw      = document.getElementById('book-wrapper');
+const fsBtn   = document.getElementById('fs-btn');
+const skipBtn = document.getElementById('skip-btn');
+const rotIcon = document.getElementById('rotate-icon');
+const rotText = document.getElementById('rotate-text');
 
+// Build dots
+const dotsArr = [];
 for (let i = 0; i < N; i++) {
   const d = document.createElement('div');
   d.className = 'dot' + (i===0?' on':'');
-  dotsEl.appendChild(d);
+  dotsEl.insertBefore(d, dotsEl.querySelector('.key-hint'));
+  dotsArr.push(d);
 }
 
+// ── Navigation ──
 function go(i) {
   if (i < 0 || i >= N) return;
   cur = i;
   pages.style.transform = `translateX(-${cur*100}vw)`;
   bp.disabled = cur === 0;
   bn.disabled = cur === N-1;
-  dotsEl.querySelectorAll('.dot').forEach((d,j) => d.classList.toggle('on', j===cur));
+  dotsArr.forEach((d,j) => d.classList.toggle('on', j===cur));
 }
 
 bp.addEventListener('click', () => go(cur-1));
 bn.addEventListener('click', () => go(cur+1));
 
+// Keyboard (desktop)
+document.addEventListener('keydown', e => {
+  if (!bw.classList.contains('visible')) return;
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown')  go(cur+1);
+  if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')    go(cur-1);
+});
+
+// Scroll wheel (desktop)
+let wheelLock = false;
+document.addEventListener('wheel', e => {
+  if (!bw.classList.contains('visible') || wheelLock) return;
+  wheelLock = true;
+  if (e.deltaY > 0 || e.deltaX > 0) go(cur+1);
+  else go(cur-1);
+  setTimeout(() => { wheelLock = false; }, 600);
+}, { passive: true });
+
+// Touch swipe (mobile)
 const book = document.getElementById('book');
 book.addEventListener('touchstart', e => { sx = e.touches[0].clientX; }, {passive:true});
-book.addEventListener('touchend', e => {
+book.addEventListener('touchend',   e => {
   const dx = e.changedTouches[0].clientX - sx;
   if (Math.abs(dx) > 45) go(dx < 0 ? cur+1 : cur-1);
 });
 
-setTimeout(() => {
-  rot.classList.add('hidden');
+// ── Fullscreen ──
+function enterFullscreen() {
+  const el = document.documentElement;
+  const req = el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen || el.msRequestFullscreen;
+  if (req) {
+    req.call(el).catch(() => {}).finally(showBook);
+  } else {
+    showBook();
+  }
+}
+
+function showBook() {
+  gate.classList.add('hidden');
   bw.classList.add('visible');
+  gatePhase = 'done';
+}
+
+// ── Gate phases ──
+// Phase 1: show rotate animation for 3s
+// Phase 2: swap icon for fullscreen button
+setTimeout(() => {
+  // Check if device likely needs rotation prompt (touch device)
+  const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+
+  if (isTouch) {
+    // Show fullscreen button
+    rotIcon.style.display = 'none';
+    rotText.style.display = 'none';
+    fsBtn.classList.add('visible');
+    skipBtn.style.display = 'block';
+    gatePhase = 'fullscreen';
+  } else {
+    // Desktop: skip rotate gate entirely, go straight to book
+    showBook();
+  }
 }, 3000);
+
+// If fullscreen is not supported at all, hide the button
+if (!document.documentElement.requestFullscreen &&
+    !document.documentElement.webkitRequestFullscreen &&
+    !document.documentElement.mozRequestFullScreen &&
+    !document.documentElement.msRequestFullscreen) {
+  // Will just show skip link
+}
+
+// Listen for fullscreen change (user pressed Esc, etc.)
+document.addEventListener('fullscreenchange', () => {
+  if (gatePhase === 'fullscreen' && document.fullscreenElement) {
+    showBook();
+  }
+});
+document.addEventListener('webkitfullscreenchange', () => {
+  if (gatePhase === 'fullscreen' && document.webkitFullscreenElement) {
+    showBook();
+  }
+});
 </script>
 </body>
 </html>
