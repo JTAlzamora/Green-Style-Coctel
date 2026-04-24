@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Green Style — La Historia</title>
+<title>Green Style</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
 <style>
-*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 
 :root {
   --gd: #1c2b1a;
@@ -14,602 +14,590 @@
   --gl: #8aaa60;
   --gp: #c8dca0;
   --cream: #f5f0e4;
-  --cream2: #ece5d0;
-  --text: #2a3820;
   --muted: #5a6a4a;
 }
 
 html, body {
   width:100%; height:100%;
   overflow:hidden;
-  background:#0e1a0c;
-  font-family:'Cormorant Garamond',serif;
-  touch-action:none;
+  background:#0a120a;
+  font-family:'Cormorant Garamond', serif;
+  -webkit-tap-highlight-color:transparent;
   user-select:none;
 }
 
-/* ══ ROTATE / FULLSCREEN GATE ══ */
-#gate {
-  position:fixed; inset:0; z-index:999;
-  background:#0e1a0c;
-  display:flex; flex-direction:column;
-  align-items:center; justify-content:center;
-  gap:20px;
-  transition:opacity 0.6s ease;
-}
-#gate.hidden { opacity:0; pointer-events:none; }
-
-.gate-title {
-  font-family:'Playfair Display',serif;
-  font-size:38px; font-style:italic;
-  color:var(--cream); text-align:center;
-}
-.gate-title span { color:var(--gl); }
-
-/* Phone icon */
-.rotate-icon {
-  width:60px; height:60px;
-  border:2px solid var(--gl);
-  border-radius:10px;
-  position:relative;
-  animation:rotPhone 2.2s ease-in-out infinite;
-}
-.rotate-icon::after {
-  content:'';
-  position:absolute;
-  bottom:6px; left:50%; transform:translateX(-50%);
-  width:6px; height:6px;
-  background:var(--gl); border-radius:50%;
-}
-@keyframes rotPhone {
-  0%,35%  { transform:rotate(0deg); }
-  65%,100%{ transform:rotate(-90deg); }
-}
-
-.rotate-text {
-  font-family:'DM Mono',monospace;
-  font-size:10px; letter-spacing:0.35em;
-  color:var(--gl); text-transform:uppercase;
-  text-align:center; line-height:2;
-}
-
-/* Fullscreen button (shown after rotation phase) */
-#fs-btn {
-  display:none;
-  align-items:center; gap:10px;
-  background:none;
-  border:1px solid rgba(138,170,96,0.5);
-  border-radius:4px;
-  padding:12px 24px;
-  cursor:pointer;
-  transition:border-color 0.2s, background 0.2s;
-  margin-top:8px;
-}
-#fs-btn:hover { border-color:var(--gl); background:rgba(138,170,96,0.08); }
-#fs-btn.visible { display:flex; }
-
-#fs-btn svg { flex-shrink:0; }
-
-.fs-btn-label {
-  font-family:'DM Mono',monospace;
-  font-size:10px; letter-spacing:0.3em;
-  color:var(--gl); text-transform:uppercase;
-}
-
-.skip-link {
-  font-family:'DM Mono',monospace;
-  font-size:9px; letter-spacing:0.25em;
-  color:rgba(138,170,96,0.35);
-  text-transform:uppercase;
-  cursor:pointer;
-  border:none; background:none;
-  text-decoration:underline;
-  margin-top:4px;
-  transition:color 0.2s;
-}
-.skip-link:hover { color:rgba(138,170,96,0.6); }
-
-/* ══ BOOK WRAPPER ══ */
-#book-wrapper {
+/* ══ SLIDES CONTAINER ══ */
+#reel {
   position:fixed; inset:0;
-  opacity:0; pointer-events:none;
-  transition:opacity 0.8s ease;
-}
-#book-wrapper.visible { opacity:1; pointer-events:all; }
-
-/* ══ BOOK ══ */
-#book {
-  width:100vw; height:100vh;
-  position:relative; overflow:hidden;
-}
-
-/* Spine */
-#book::after {
-  content:'';
-  position:absolute;
-  left:50%; top:5%; bottom:5%;
-  width:1px;
-  background:linear-gradient(to bottom,transparent,rgba(138,170,96,0.5) 20%,rgba(138,170,96,0.5) 80%,transparent);
-  z-index:100; pointer-events:none;
-}
-
-/* ══ PAGES ══ */
-#pages {
   display:flex;
-  width:100%; height:100%;
-  transition:transform 0.5s cubic-bezier(0.4,0,0.2,1);
+  flex-direction:column;
+  transition:transform 0.55s cubic-bezier(0.77,0,0.18,1);
   will-change:transform;
 }
 
-.spread {
-  min-width:100vw; width:100vw; height:100vh;
-  display:flex; flex-shrink:0;
-}
-
-.page {
-  width:50%; height:100%;
-  overflow:hidden; position:relative;
-  display:flex; flex-direction:column;
-  justify-content:center;
-  padding:4vh 4vw;
-}
-
-.page.dark  { background:var(--gd); }
-.page.light { background:var(--cream); }
-.page.mid   { background:var(--cream2); }
-.page.green { background:#253d22; }
-
-/* Eyebrow */
-.eyebrow {
-  font-family:'DM Mono',monospace;
-  font-size:clamp(7px,1.3vw,10px);
-  letter-spacing:0.35em; text-transform:uppercase;
-  margin-bottom:1.2vh;
-  display:flex; align-items:center; gap:8px;
-}
-.eyebrow::before { content:''; display:block; width:14px; height:0.5px; }
-.dark .eyebrow,  .green .eyebrow { color:var(--gl); }
-.dark .eyebrow::before, .green .eyebrow::before { background:var(--gl); }
-.light .eyebrow, .mid .eyebrow   { color:var(--gm); }
-.light .eyebrow::before, .mid .eyebrow::before   { background:var(--gm); }
-
-/* Title */
-.pg-title {
-  font-family:'Playfair Display',serif;
-  font-weight:700; font-style:italic;
-  line-height:1.0; margin-bottom:1.8vh;
-  font-size:clamp(18px,3.5vw,30px);
-}
-.dark .pg-title,  .green .pg-title { color:var(--cream); }
-.light .pg-title, .mid .pg-title   { color:var(--gd); }
-
-/* Body */
-.pg-body { font-size:clamp(11px,1.8vw,15px); line-height:1.75; }
-.dark .pg-body,  .green .pg-body { color:var(--gp); }
-.light .pg-body, .mid .pg-body   { color:var(--muted); }
-.pg-body p+p { margin-top:1.1vh; }
-.dark .pg-body strong,  .green .pg-body strong { color:var(--cream); }
-.light .pg-body strong, .mid .pg-body strong   { color:var(--gd); }
-.pg-body em { font-style:italic; }
-
-/* Photo */
-.photo-page { padding:0 !important; justify-content:flex-end !important; }
-.photo-page img {
-  position:absolute; inset:0;
-  width:100%; height:100%;
-  object-fit:cover; object-position:center 15%;
-}
-.photo-overlay {
-  position:relative; z-index:2;
-  padding:2.5vh 4vw;
-  background:linear-gradient(to top,rgba(28,43,26,0.92) 0%,transparent 100%);
+/* ══ SINGLE SLIDE ══ */
+.slide {
+  position:relative;
+  min-height:100svh;
   width:100%;
-}
-.photo-cap {
-  font-family:'DM Mono',monospace;
-  font-size:clamp(7px,1vw,9px);
-  letter-spacing:0.3em; color:var(--gl); text-transform:uppercase;
-}
-
-/* Ingredients */
-.ing-grid { display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-top:1.4vh; }
-.ing-card {
-  background:rgba(138,170,96,0.1);
-  border:0.5px solid rgba(138,170,96,0.3);
-  border-radius:3px; padding:7px 9px;
-}
-.ing-card .qty {
-  font-family:'DM Mono',monospace;
-  font-size:clamp(7px,1vw,9px);
-  color:var(--gl); letter-spacing:0.1em; display:block;
-}
-.ing-card .nm { font-style:italic; color:var(--cream); font-size:clamp(11px,1.7vw,14px); }
-
-/* Steps */
-.steps { margin-top:1.4vh; display:flex; flex-direction:column; gap:1vh; }
-.step  { display:flex; gap:10px; align-items:flex-start; }
-.step-n {
-  font-family:'Playfair Display',serif; font-style:italic;
-  color:var(--gl); opacity:0.5; flex-shrink:0; line-height:1;
-  font-size:clamp(20px,3vw,28px);
-}
-.step-t { color:var(--gp); line-height:1.5; font-size:clamp(10px,1.6vw,13px); padding-top:3px; }
-.step-t strong { color:var(--cream); }
-
-/* Flavor tags */
-.ftags { display:flex; flex-wrap:wrap; gap:5px; margin-top:1.4vh; }
-.ftag {
-  background:rgba(106,144,64,0.1);
-  border:0.5px solid rgba(106,144,64,0.35);
-  border-radius:2px; font-style:italic;
-  color:var(--gm); padding:3px 9px;
-  font-size:clamp(10px,1.5vw,13px);
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-end;
+  overflow:hidden;
+  flex-shrink:0;
 }
 
-/* Quote */
-.quote { border-left:2px solid var(--gl); padding:1.2vh 0 1.2vh 1.5vw; margin:1.5vh 0; }
-.quote-t { font-style:italic; color:var(--cream); line-height:1.6; font-size:clamp(11px,1.8vw,15px); }
-.quote-a {
-  font-family:'DM Mono',monospace;
-  font-size:clamp(7px,1vw,9px);
-  color:var(--gl); letter-spacing:0.25em;
-  text-transform:uppercase; margin-top:8px;
+/* Background layers */
+.slide-bg {
+  position:absolute; inset:0;
+  z-index:0;
 }
+
+/* Full-bleed photo */
+.slide-bg img {
+  width:100%; height:100%;
+  object-fit:cover;
+  object-position:center 15%;
+}
+
+/* Gradient overlays */
+.slide-bg::after {
+  content:'';
+  position:absolute; inset:0;
+}
+
+.slide[data-theme="photo"] .slide-bg::after {
+  background: linear-gradient(
+    to bottom,
+    rgba(10,18,10,0.35) 0%,
+    rgba(10,18,10,0.1) 30%,
+    rgba(10,18,10,0.7) 65%,
+    rgba(10,18,10,0.97) 100%
+  );
+}
+
+.slide[data-theme="dark"] .slide-bg {
+  background: radial-gradient(ellipse 90% 70% at 50% 0%, #253d22 0%, #0e1a0c 70%);
+}
+
+.slide[data-theme="dark"] .slide-bg::after {
+  background: radial-gradient(ellipse 60% 50% at 80% 100%, rgba(138,170,96,0.06) 0%, transparent 60%);
+}
+
+.slide[data-theme="cover"] .slide-bg {
+  background: #0e1a0c;
+}
+
+.slide[data-theme="cover"] .slide-bg::after {
+  background: radial-gradient(ellipse 80% 60% at 50% 30%, rgba(74,112,48,0.2) 0%, transparent 70%);
+}
+
+/* ══ SLIDE CONTENT ══ */
+.slide-content {
+  position:relative; z-index:2;
+  padding:0 28px 36px;
+  display:flex; flex-direction:column; gap:0;
+}
+
+/* ══ PROGRESS BAR ══ */
+#progress-bar {
+  position:fixed; top:0; left:0; right:0;
+  height:3px;
+  display:flex; gap:3px;
+  padding:0 16px;
+  z-index:100;
+  padding-top:10px;
+}
+
+.prog-seg {
+  flex:1; height:2px;
+  background:rgba(255,255,255,0.25);
+  border-radius:2px;
+  overflow:hidden;
+  position:relative;
+}
+
+.prog-fill {
+  position:absolute; top:0; left:0; height:100%;
+  background:#fff;
+  width:0%;
+  border-radius:2px;
+  transition:none;
+}
+
+.prog-seg.done .prog-fill { width:100%; }
+.prog-seg.active .prog-fill {
+  animation: fillBar var(--dur, 5s) linear forwards;
+}
+
+@keyframes fillBar { from { width:0% } to { width:100% } }
+
+/* ══ TYPOGRAPHY ══ */
+.label {
+  font-family:'DM Mono', monospace;
+  font-size:10px; letter-spacing:0.35em;
+  text-transform:uppercase;
+  color:var(--gl);
+  margin-bottom:10px;
+  display:flex; align-items:center; gap:8px;
+  opacity:0;
+  animation:fadeUp 0.5s ease forwards;
+}
+
+.label::before {
+  content:''; display:block;
+  width:16px; height:0.5px;
+  background:var(--gl);
+}
+
+.headline {
+  font-family:'Playfair Display', serif;
+  font-weight:700; font-style:italic;
+  line-height:1.0;
+  color:#fff;
+  margin-bottom:14px;
+  opacity:0;
+  animation:fadeUp 0.5s ease 0.1s forwards;
+}
+
+.headline .acc { color:var(--gl); }
+
+.body-text {
+  font-size:16px; line-height:1.7;
+  color:rgba(255,255,255,0.82);
+  margin-bottom:0;
+  opacity:0;
+  animation:fadeUp 0.5s ease 0.2s forwards;
+}
+
+.body-text strong { color:#fff; }
+.body-text em { color:var(--gp); font-style:italic; }
 
 /* Ornament */
-.orn { color:var(--gl); opacity:0.45; letter-spacing:6px; font-size:11px; margin:1.5vh 0; }
-
-/* ══ NAV ══ */
-#nav {
-  position:fixed; bottom:0; left:0; right:0;
-  display:flex; justify-content:space-between; align-items:center;
-  padding:8px 5vw; z-index:200; pointer-events:none;
-}
-.nbtn {
-  font-family:'DM Mono',monospace;
-  font-size:9px; letter-spacing:0.3em; text-transform:uppercase;
-  color:rgba(138,170,96,0.7); background:none;
-  border:0.5px solid rgba(138,170,96,0.3);
-  border-radius:2px; padding:6px 12px;
-  cursor:pointer; pointer-events:all;
-  transition:color 0.2s, border-color 0.2s;
-}
-.nbtn:hover  { color:var(--gl); border-color:var(--gl); }
-.nbtn:active { color:var(--gl); border-color:var(--gl); }
-.nbtn:disabled { opacity:0.2; pointer-events:none; }
-
-/* Desktop arrow hints */
-.key-hint {
-  font-family:'DM Mono',monospace;
-  font-size:8px; letter-spacing:0.2em;
-  color:rgba(138,170,96,0.3);
-  text-transform:uppercase;
-  display:none;
-  pointer-events:none;
+.orn {
+  color:var(--gl); letter-spacing:6px; font-size:11px;
+  opacity:0; margin-bottom:12px;
+  animation:fadeUp 0.5s ease 0.15s forwards;
 }
 
-.dots { display:flex; gap:6px; align-items:center; }
-.dot  { width:5px; height:5px; border-radius:50%; background:rgba(138,170,96,0.22); transition:background 0.3s; }
-.dot.on { background:var(--gl); }
-
-/* Desktop: show keyboard hints, hide rotate gate */
-@media (hover: hover) and (pointer: fine) {
-  .key-hint { display:block; }
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(16px); }
+  to   { opacity:1; transform:translateY(0); }
 }
 
-/* ══ DESKTOP CLICK ZONES ══ */
-.click-zone {
-  position:fixed; top:0; bottom:40px;
-  width:12vw; z-index:150;
-  cursor:pointer;
-  display:flex; align-items:center; justify-content:center;
-  opacity:0;
-  transition:opacity 0.2s;
+/* ══ COVER SLIDE ══ */
+.cover-wrap {
+  position:relative; z-index:2;
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  min-height:100svh;
+  padding:0 28px;
+  text-align:center;
+  gap:0;
 }
-.click-zone:hover { opacity:1; }
-.click-zone.left  { left:0; }
-.click-zone.right { right:0; }
 
-.click-zone-arrow {
-  font-family:'Playfair Display',serif;
+.cover-bg-letter {
+  position:absolute;
+  font-family:'Playfair Display', serif;
   font-style:italic;
-  font-size:28px;
-  color:rgba(138,170,96,0.6);
-  text-shadow:0 0 20px rgba(0,0,0,0.5);
+  font-size:65vw;
+  color:var(--gl);
+  opacity:0.04;
+  line-height:1;
+  top:50%; left:50%;
+  transform:translate(-50%,-52%);
+  pointer-events:none;
+  z-index:1;
+}
+
+.cover-eyebrow {
+  font-family:'DM Mono', monospace;
+  font-size:10px; letter-spacing:0.4em;
+  text-transform:uppercase;
+  color:var(--gl);
+  margin-bottom:20px;
+  opacity:0;
+  animation:fadeUp 0.6s ease 0.2s forwards;
+  position:relative; z-index:2;
+}
+
+.cover-title {
+  font-family:'Playfair Display', serif;
+  font-weight:700; font-style:italic;
+  font-size:22vw;
+  color:#fff;
+  line-height:0.88;
+  letter-spacing:-1px;
+  opacity:0;
+  animation:fadeUp 0.6s ease 0.35s forwards;
+  position:relative; z-index:2;
+}
+
+.cover-title .acc { color:var(--gl); }
+
+.cover-divider {
+  display:flex; align-items:center; gap:12px;
+  margin:22px auto;
+  width:70%;
+  opacity:0;
+  animation:fadeUp 0.6s ease 0.5s forwards;
+  position:relative; z-index:2;
+}
+.cover-divider-line { flex:1; height:0.5px; background:var(--gl); opacity:0.35; }
+.cover-divider span { color:var(--gl); font-size:12px; opacity:0.6; }
+
+.cover-sub {
+  font-size:15px; font-style:italic;
+  color:var(--gp);
+  line-height:1.8;
+  opacity:0;
+  animation:fadeUp 0.6s ease 0.6s forwards;
+  position:relative; z-index:2;
+}
+
+.cover-meta {
+  font-family:'DM Mono', monospace;
+  font-size:9px; letter-spacing:0.3em;
+  text-transform:uppercase;
+  color:rgba(138,170,96,0.5);
+  margin-top:10px;
+  opacity:0;
+  animation:fadeUp 0.6s ease 0.75s forwards;
+  position:relative; z-index:2;
+}
+
+/* ══ INGREDIENTS SLIDE ══ */
+.ing-list {
+  display:flex; flex-direction:column;
+  gap:10px; margin-top:4px;
+  opacity:0;
+  animation:fadeUp 0.5s ease 0.25s forwards;
+}
+
+.ing-row {
+  display:flex; align-items:flex-start;
+  gap:14px;
+  padding:10px 14px;
+  background:rgba(138,170,96,0.07);
+  border:0.5px solid rgba(138,170,96,0.2);
+  border-radius:4px;
+}
+
+.ing-qty {
+  font-family:'DM Mono', monospace;
+  font-size:10px; color:var(--gl);
+  letter-spacing:0.1em;
+  flex-shrink:0; padding-top:2px;
+  min-width:38px;
+}
+
+.ing-info {}
+.ing-name {
+  font-size:16px; font-style:italic; color:#fff;
+  line-height:1.2;
+}
+.ing-desc {
+  font-size:12px; color:rgba(200,220,160,0.65);
+  line-height:1.4; margin-top:2px;
+}
+
+/* ══ TAP HINT ══ */
+#tap-hint {
+  position:fixed; bottom:18px; left:50%; transform:translateX(-50%);
+  font-family:'DM Mono', monospace;
+  font-size:9px; letter-spacing:0.3em;
+  text-transform:uppercase;
+  color:rgba(255,255,255,0.25);
+  z-index:100;
+  pointer-events:none;
+  animation:fadeHint 3s ease 1.5s forwards;
+}
+
+@keyframes fadeHint {
+  0%   { opacity:1; }
+  70%  { opacity:1; }
+  100% { opacity:0; }
+}
+
+/* ══ SLIDE INDICATOR ══ */
+#slide-dots {
+  position:fixed;
+  right:12px; top:50%; transform:translateY(-50%);
+  display:flex; flex-direction:column; gap:5px;
+  z-index:100;
+}
+
+.sdot {
+  width:3px; height:3px;
+  border-radius:50%;
+  background:rgba(255,255,255,0.2);
+  transition:all 0.3s;
+}
+.sdot.on {
+  background:#fff;
+  height:18px;
+  border-radius:2px;
 }
 </style>
 </head>
 <body>
 
-<!-- ══ GATE: ROTATE + FULLSCREEN ══ -->
-<div id="gate">
-  <div class="gate-title">Green <span>Style</span></div>
-  <div class="rotate-icon" id="rotate-icon"></div>
-  <div class="rotate-text" id="rotate-text">Gira el móvil<br>para la mejor experiencia</div>
+<!-- Progress bar -->
+<div id="progress-bar"></div>
 
-  <!-- Shown after 3s -->
-  <button id="fs-btn" onclick="enterFullscreen()">
-    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M1 5V1H5M13 1H17V5M17 13V17H13M5 17H1V13" stroke="#8aaa60" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
-    <span class="fs-btn-label">Ver en pantalla completa</span>
-  </button>
+<!-- Side dots -->
+<div id="slide-dots"></div>
 
-  <button class="skip-link" id="skip-btn" onclick="showBook()">Continuar sin pantalla completa</button>
-</div>
+<!-- Tap hint -->
+<div id="tap-hint">Toca para avanzar</div>
 
-<!-- ══ BOOK ══ -->
-<div id="book-wrapper">
+<!-- ══ REEL ══ -->
+<div id="reel">
 
-  <!-- Desktop click zones -->
-  <div class="click-zone left"  onclick="go(cur-1)"><div class="click-zone-arrow">‹</div></div>
-  <div class="click-zone right" onclick="go(cur+1)"><div class="click-zone-arrow">›</div></div>
-
-  <div id="book">
-    <div id="pages">
-
-      <!-- SPREAD 1: PORTADA -->
-      <div class="spread">
-        <div class="page dark" style="align-items:center;text-align:center;justify-content:center;">
-          <div style="position:absolute;font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(90px,16vw,140px);color:var(--gl);opacity:0.08;line-height:1;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;">G</div>
-          <div style="position:relative;z-index:2;">
-            <div class="eyebrow" style="justify-content:center;">Mallorca · 2026</div>
-            <div style="font-family:'Playfair Display',serif;font-weight:700;font-style:italic;font-size:clamp(42px,8vw,70px);color:var(--cream);line-height:0.9;margin-bottom:1.5vh;">Green<br><span style="color:var(--gl);">Style</span></div>
-            <div style="display:flex;align-items:center;gap:10px;margin:1.8vh auto;max-width:180px;">
-              <div style="flex:1;height:0.5px;background:var(--gl);opacity:0.35;"></div>
-              <span style="color:var(--gl);font-size:11px;opacity:0.6;">✦</span>
-              <div style="flex:1;height:0.5px;background:var(--gl);opacity:0.35;"></div>
-            </div>
-            <div style="font-size:clamp(10px,1.6vw,13px);font-style:italic;color:var(--gp);">Un cóctel original</div>
-            <div style="font-family:'DM Mono',monospace;font-size:clamp(7px,1vw,9px);color:var(--gl);letter-spacing:0.3em;text-transform:uppercase;margin-top:1vh;opacity:0.7;">Concurso · 13 de Mayo</div>
-          </div>
-        </div>
-        <div class="page photo-page">
-          <img src="Foto_Cocktail.jpeg" alt="Green Style cocktail" />
-          <div class="photo-overlay">
-            <div class="photo-cap">Vodka · Pistacho · Maracuyá · Coco</div>
-          </div>
-        </div>
+  <!-- 0: COVER -->
+  <div class="slide" data-theme="cover" data-dur="4">
+    <div class="slide-bg"></div>
+    <div class="cover-wrap">
+      <div class="cover-bg-letter">G</div>
+      <div class="cover-eyebrow">Concurso de Coctelería · Mallorca 2026</div>
+      <div class="cover-title">Green<br><span class="acc">Style</span></div>
+      <div class="cover-divider">
+        <div class="cover-divider-line"></div>
+        <span>✦</span>
+        <div class="cover-divider-line"></div>
       </div>
-
-      <!-- SPREAD 2: INSPIRACIÓN -->
-      <div class="spread">
-        <div class="page light">
-          <div class="eyebrow">La inspiración</div>
-          <div class="pg-title">El color<br>de la isla</div>
-          <div class="pg-body">
-            <p>Mallorca tiene una luz particular que lo transforma todo. Al atardecer, la Serra de Tramuntana adopta un verde profundo que se funde con el oro del sol poniente.</p>
-            <p>Ese instante fue el punto de partida. <strong>El pistacho no es solo un ingrediente; es el color de la isla cuando la luz llega de lado.</strong> Un verde vivo, orgánico, lleno de carácter.</p>
-            <p>La idea era crear algo que hablara del Mediterráneo con ingredientes inesperados, pero que en conjunto tuvieran todo el sentido del mundo.</p>
-          </div>
-        </div>
-        <div class="page mid">
-          <div class="eyebrow">La esencia</div>
-          <div class="pg-title">Mediterráneo<br>y trópico</div>
-          <div class="pg-body">
-            <p>El nombre <em>Green Style</em> refleja una forma de entender la coctelería: con libertad creativa, sin límites geográficos, pero con raíces claras.</p>
-            <p>El maracuyá y el coco traen el trópico. La lima y el pistacho anclan el cóctel al Mediterráneo. <strong>El resultado es un diálogo entre dos mundos que se complementan a la perfección.</strong></p>
-          </div>
-          <div class="orn">· · ✦ · ·</div>
-          <div style="font-size:clamp(10px,1.5vw,12px);font-style:italic;color:var(--gm);">Copa percepción 25 cl · Coctelera</div>
-        </div>
-      </div>
-
-      <!-- SPREAD 3: INGREDIENTES -->
-      <div class="spread">
-        <div class="page dark">
-          <div class="eyebrow">Los ingredientes</div>
-          <div class="pg-title">Cada uno<br>con su porqué</div>
-          <div class="pg-body"><p>Seis ingredientes, ninguno al azar.</p></div>
-          <div class="ing-grid">
-            <div class="ing-card"><span class="qty">35 ml</span><span class="nm">Vodka</span></div>
-            <div class="ing-card"><span class="qty">40 ml</span><span class="nm">Licor de pistacho</span></div>
-            <div class="ing-card"><span class="qty">20 ml</span><span class="nm">Jarabe de vainilla</span></div>
-            <div class="ing-card"><span class="qty">15 ml</span><span class="nm">Zumo de lima</span></div>
-            <div class="ing-card"><span class="qty">15 ml</span><span class="nm">Puré de coco</span></div>
-            <div class="ing-card"><span class="qty">50 ml</span><span class="nm">Zumo de maracuyá</span></div>
-          </div>
-        </div>
-        <div class="page green">
-          <div class="eyebrow">El perfil de sabor</div>
-          <div class="pg-title">¿A qué sabe<br>Mallorca?</div>
-          <div class="pg-body">
-            <p>El primer sorbo es cremoso y envolvente, con el pistacho como protagonista. Después llega el maracuyá, fresco y ligeramente ácido. El coco redondea el conjunto, y la lima aporta el equilibrio final.</p>
-            <p><strong>Complejo sin resultar pesado. Tropical sin perder elegancia.</strong></p>
-          </div>
-          <div class="ftags">
-            <span class="ftag">Tropical</span>
-            <span class="ftag">Cremoso</span>
-            <span class="ftag">Cítrico</span>
-            <span class="ftag">Floral</span>
-            <span class="ftag">Fresco</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- SPREAD 4: PREPARACIÓN -->
-      <div class="spread">
-        <div class="page dark">
-          <div class="eyebrow">La preparación</div>
-          <div class="pg-title">El proceso</div>
-          <div class="steps">
-            <div class="step"><span class="step-n">1</span><p class="step-t"><strong>Bordear la copa</strong> con azúcar moreno. El primer contacto ya define el carácter del cóctel.</p></div>
-            <div class="step"><span class="step-n">2</span><p class="step-t"><strong>Incorporar todos los ingredientes</strong> a la coctelera con tres cubitos de hielo.</p></div>
-            <div class="step"><span class="step-n">3</span><p class="step-t"><strong>Agitar enérgicamente</strong> durante 15 segundos. Clave para la textura cremosa.</p></div>
-            <div class="step"><span class="step-n">4</span><p class="step-t"><strong>Colar y servir</strong> en la copa ya preparada.</p></div>
-            <div class="step"><span class="step-n">5</span><p class="step-t"><strong>Rallar lima, naranja y pistacho</strong> sobre la capa superior.</p></div>
-          </div>
-        </div>
-        <div class="page light">
-          <div class="eyebrow">La presentación</div>
-          <div class="pg-title">Que entre<br>por los ojos</div>
-          <div class="pg-body">
-            <p>Una rama de hierbabuena enmarcada en un giro de naranja en el borde. Un par de pistachos enteros en el centro. La ralladura de lima, naranja y pistacho esparcida sobre la superficie.</p>
-            <p><strong>El resultado es una copa que combina elegancia visual con una complejidad aromática que anticipa el sabor.</strong></p>
-          </div>
-          <div class="quote">
-            <p class="quote-t">"Un buen cóctel se bebe dos veces: primero con los ojos, luego con la boca."</p>
-            <p class="quote-a">— Filosofía Green Style</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- SPREAD 5: CIERRE -->
-      <div class="spread">
-        <div class="page photo-page">
-          <img src="Foto_Cocktail.jpeg" alt="Green Style" style="object-position:center 25%;" />
-          <div class="photo-overlay" style="background:linear-gradient(to top,rgba(28,43,26,0.95) 0%,transparent 100%);">
-            <div class="photo-cap">Mallorca · Mayo 2026</div>
-          </div>
-        </div>
-        <div class="page dark" style="align-items:center;text-align:center;justify-content:center;">
-          <div style="position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:1.8vh;">
-            <div class="eyebrow" style="justify-content:center;">Hecho en Mallorca</div>
-            <div style="font-family:'Playfair Display',serif;font-weight:700;font-style:italic;font-size:clamp(40px,8vw,68px);color:var(--cream);line-height:0.9;">Green<br><span style="color:var(--gl);">Style</span></div>
-            <div style="display:flex;align-items:center;gap:10px;max-width:160px;width:100%;">
-              <div style="flex:1;height:0.5px;background:var(--gl);opacity:0.35;"></div>
-              <span style="color:var(--gl);font-size:11px;opacity:0.6;">✦</span>
-              <div style="flex:1;height:0.5px;background:var(--gl);opacity:0.35;"></div>
-            </div>
-            <div style="font-size:clamp(10px,1.6vw,13px);font-style:italic;color:var(--gp);max-width:180px;line-height:1.8;">Vodka · Pistacho<br>Maracuyá · Coco</div>
-            <div style="font-family:'DM Mono',monospace;font-size:clamp(7px,1vw,9px);color:var(--gl);opacity:0.55;letter-spacing:0.25em;text-transform:uppercase;margin-top:0.5vh;">Concurso de Coctelería 2026</div>
-          </div>
-        </div>
-      </div>
-
-    </div><!-- /pages -->
-  </div><!-- /book -->
-
-  <!-- NAV -->
-  <div id="nav">
-    <button class="nbtn" id="bp" disabled>← Ant.</button>
-    <div class="dots" id="dots">
-      <span class="key-hint">← →</span>
+      <div class="cover-sub">Vodka · Pistacho · Maracuyá · Coco</div>
+      <div class="cover-meta">Un cóctel original · Mallorca</div>
     </div>
-    <button class="nbtn" id="bn">Sig. →</button>
   </div>
 
-</div><!-- /book-wrapper -->
+  <!-- 1: FOTO + FRASE -->
+  <div class="slide" data-theme="photo" data-dur="5">
+    <div class="slide-bg">
+      <img src="Foto_Cocktail.jpeg" alt="Green Style" />
+    </div>
+    <div class="slide-content">
+      <div class="label">La imagen</div>
+      <div class="headline" style="font-size:clamp(32px,9vw,52px);">Que entre<br>por los ojos</div>
+      <div class="body-text">La copa percepción de 25 cl. Bordeada con azúcar moreno. Pistachos enteros en el centro. Ralladura de lima, naranja y pistacho en la superficie. Hierbabuena y giro de naranja en el borde.</div>
+    </div>
+  </div>
+
+  <!-- 2: INSPIRACIÓN -->
+  <div class="slide" data-theme="dark" data-dur="6">
+    <div class="slide-bg"></div>
+    <div class="slide-content" style="justify-content:flex-end; padding-bottom:50px;">
+      <div class="label">La inspiración</div>
+      <div class="headline" style="font-size:clamp(28px,8vw,44px);">El color<br>de la isla</div>
+      <div class="body-text">
+        Mallorca tiene una luz particular. Al atardecer, la Serra de Tramuntana adopta un <strong>verde profundo</strong> que se funde con el oro del sol poniente.<br><br>
+        Ese instante fue el punto de partida. El pistacho no es solo un ingrediente — <em>es el color de la isla cuando la luz llega de lado.</em>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3: ESENCIA -->
+  <div class="slide" data-theme="dark" data-dur="5">
+    <div class="slide-bg"></div>
+    <div class="slide-content" style="padding-bottom:50px;">
+      <div class="orn">· · ✦ · ·</div>
+      <div class="label">La esencia</div>
+      <div class="headline" style="font-size:clamp(28px,8vw,44px);">Mediterráneo<br><span class="acc">y trópico</span></div>
+      <div class="body-text">
+        El maracuyá y el coco traen el trópico. La lima y el pistacho anclan el cóctel al Mediterráneo.<br><br>
+        <strong>El resultado: un diálogo entre dos mundos que se complementan a la perfección.</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4: INGREDIENTES -->
+  <div class="slide" data-theme="dark" data-dur="7">
+    <div class="slide-bg"></div>
+    <div class="slide-content" style="padding-bottom:42px;">
+      <div class="label">Los ingredientes</div>
+      <div class="headline" style="font-size:clamp(24px,7vw,36px); margin-bottom:12px;">Cada uno<br>con su porqué</div>
+      <div class="ing-list">
+        <div class="ing-row">
+          <span class="ing-qty">35 ml</span>
+          <div class="ing-info">
+            <div class="ing-name">Vodka</div>
+            <div class="ing-desc">La base neutra que deja hablar al resto de ingredientes sin imponer carácter propio.</div>
+          </div>
+        </div>
+        <div class="ing-row">
+          <span class="ing-qty">40 ml</span>
+          <div class="ing-info">
+            <div class="ing-name">Licor de pistacho</div>
+            <div class="ing-desc">El alma del cóctel. Cremoso, vegetal y ligeramente dulce — el verde de Mallorca en copa.</div>
+          </div>
+        </div>
+        <div class="ing-row">
+          <span class="ing-qty">50 ml</span>
+          <div class="ing-info">
+            <div class="ing-name">Zumo de maracuyá</div>
+            <div class="ing-desc">El trópico que irrumpe. Aporta acidez viva y ese aroma inconfundible que abre el paladar.</div>
+          </div>
+        </div>
+        <div class="ing-row">
+          <span class="ing-qty">15 ml</span>
+          <div class="ing-info">
+            <div class="ing-name">Puré de coco</div>
+            <div class="ing-desc">Redondea y suaviza. Da la textura aterciopelada que hace que cada sorbo sea envolvente.</div>
+          </div>
+        </div>
+        <div class="ing-row">
+          <span class="ing-qty">20 ml</span>
+          <div class="ing-info">
+            <div class="ing-name">Jarabe de vainilla</div>
+            <div class="ing-desc">Equilibra la acidez y aporta un fondo dulce y cálido que une todos los sabores.</div>
+          </div>
+        </div>
+        <div class="ing-row">
+          <span class="ing-qty">15 ml</span>
+          <div class="ing-info">
+            <div class="ing-name">Zumo de lima</div>
+            <div class="ing-desc">El punto de equilibrio final. Limpio, cítrico, imprescindible.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5: CIERRE -->
+  <div class="slide" data-theme="photo" data-dur="3">
+    <div class="slide-bg">
+      <img src="Foto_Cocktail.jpeg" alt="Green Style" style="object-position:center 25%;" />
+    </div>
+    <div class="slide-content" style="align-items:center; text-align:center; padding-bottom:60px;">
+      <div class="orn" style="text-align:center;">· · ✦ · ·</div>
+      <div class="headline" style="font-size:clamp(40px,12vw,64px); text-align:center;">Green<br><span class="acc">Style</span></div>
+      <div class="body-text" style="text-align:center; font-size:14px; letter-spacing:0.05em;">
+        Hecho en Mallorca · Con amor y pistacho
+      </div>
+    </div>
+  </div>
+
+</div><!-- /reel -->
 
 <script>
-const N = 5;
-let cur = 0, sx = 0;
-let gatePhase = 'rotate'; // 'rotate' | 'fullscreen' | 'done'
+const slides = Array.from(document.querySelectorAll('.slide'));
+const N = slides.length;
+let cur = 0;
+let timer = null;
+let startY = 0;
+let paused = false;
 
-const pages   = document.getElementById('pages');
-const bp      = document.getElementById('bp');
-const bn      = document.getElementById('bn');
-const dotsEl  = document.getElementById('dots');
-const gate    = document.getElementById('gate');
-const bw      = document.getElementById('book-wrapper');
-const fsBtn   = document.getElementById('fs-btn');
-const skipBtn = document.getElementById('skip-btn');
-const rotIcon = document.getElementById('rotate-icon');
-const rotText = document.getElementById('rotate-text');
+const reel       = document.getElementById('reel');
+const progressBar= document.getElementById('progress-bar');
+const sideDots   = document.getElementById('slide-dots');
 
-// Build dots
-const dotsArr = [];
-for (let i = 0; i < N; i++) {
-  const d = document.createElement('div');
-  d.className = 'dot' + (i===0?' on':'');
-  dotsEl.insertBefore(d, dotsEl.querySelector('.key-hint'));
-  dotsArr.push(d);
-}
-
-// ── Navigation ──
-function go(i) {
-  if (i < 0 || i >= N) return;
-  cur = i;
-  pages.style.transform = `translateX(-${cur*100}vw)`;
-  bp.disabled = cur === 0;
-  bn.disabled = cur === N-1;
-  dotsArr.forEach((d,j) => d.classList.toggle('on', j===cur));
-}
-
-bp.addEventListener('click', () => go(cur-1));
-bn.addEventListener('click', () => go(cur+1));
-
-// Keyboard (desktop)
-document.addEventListener('keydown', e => {
-  if (!bw.classList.contains('visible')) return;
-  if (e.key === 'ArrowRight' || e.key === 'ArrowDown')  go(cur+1);
-  if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')    go(cur-1);
+// ── Build progress segments ──
+const segs = [];
+slides.forEach((s, i) => {
+  const seg = document.createElement('div');
+  seg.className = 'prog-seg';
+  const fill = document.createElement('div');
+  fill.className = 'prog-fill';
+  seg.appendChild(fill);
+  progressBar.appendChild(seg);
+  segs.push(seg);
 });
 
-// Scroll wheel (desktop)
+// ── Build side dots ──
+const sdots = [];
+slides.forEach((s, i) => {
+  const d = document.createElement('div');
+  d.className = 'sdot' + (i===0?' on':'');
+  sideDots.appendChild(d);
+  sdots.push(d);
+});
+
+// ── Navigate ──
+function goTo(i, fromAuto) {
+  if (i < 0 || i >= N) return;
+
+  clearTimeout(timer);
+
+  // Mark old segs
+  segs.forEach((seg, j) => {
+    seg.classList.remove('active','done');
+    seg.querySelector('.prog-fill').style.animation = 'none';
+    if (j < i) seg.classList.add('done');
+  });
+
+  cur = i;
+  reel.style.transform = `translateY(-${cur * 100}svh)`;
+
+  // Restart animations on new slide
+  restartSlideAnims(slides[cur]);
+
+  // Activate progress segment
+  const dur = parseFloat(slides[cur].dataset.dur) || 5;
+  const seg = segs[cur];
+  seg.classList.add('active');
+  seg.style.setProperty('--dur', dur + 's');
+  // Force reflow to restart animation
+  void seg.querySelector('.prog-fill').offsetWidth;
+  seg.querySelector('.prog-fill').style.animation = '';
+
+  // Update side dots
+  sdots.forEach((d,j) => {
+    d.classList.toggle('on', j===cur);
+  });
+
+  // Auto-advance
+  if (cur < N-1) {
+    timer = setTimeout(() => goTo(cur+1, true), dur * 1000);
+  } else {
+    // Last slide: fill and stay
+    timer = setTimeout(() => {}, dur * 1000);
+  }
+}
+
+function restartSlideAnims(slide) {
+  const animated = slide.querySelectorAll('.label, .headline, .body-text, .orn, .ing-list, .cover-eyebrow, .cover-title, .cover-divider, .cover-sub, .cover-meta');
+  animated.forEach(el => {
+    el.style.animation = 'none';
+    void el.offsetWidth;
+    el.style.animation = '';
+  });
+}
+
+// ── Touch / click ──
+let touchStartY = 0, touchStartX = 0;
+
+document.addEventListener('touchstart', e => {
+  touchStartY = e.touches[0].clientY;
+  touchStartX = e.touches[0].clientX;
+}, {passive:true});
+
+document.addEventListener('touchend', e => {
+  const dy = touchStartY - e.changedTouches[0].clientY;
+  const dx = Math.abs(touchStartX - e.changedTouches[0].clientX);
+  if (dx > 40) return; // horizontal swipe, ignore
+  if (dy > 30)       goTo(cur+1);
+  else if (dy < -30) goTo(cur-1);
+  else               goTo(cur+1); // tap = advance
+}, {passive:true});
+
+// ── Keyboard (desktop) ──
+document.addEventListener('keydown', e => {
+  if (e.key==='ArrowDown' || e.key==='ArrowRight' || e.key===' ') goTo(cur+1);
+  if (e.key==='ArrowUp'   || e.key==='ArrowLeft')                  goTo(cur-1);
+});
+
+// ── Scroll (desktop) ──
 let wheelLock = false;
 document.addEventListener('wheel', e => {
-  if (!bw.classList.contains('visible') || wheelLock) return;
+  if (wheelLock) return;
   wheelLock = true;
-  if (e.deltaY > 0 || e.deltaX > 0) go(cur+1);
-  else go(cur-1);
-  setTimeout(() => { wheelLock = false; }, 600);
-}, { passive: true });
+  if (e.deltaY > 0) goTo(cur+1);
+  else              goTo(cur-1);
+  setTimeout(()=>{ wheelLock=false; }, 700);
+}, {passive:true});
 
-// Touch swipe (mobile)
-const book = document.getElementById('book');
-book.addEventListener('touchstart', e => { sx = e.touches[0].clientX; }, {passive:true});
-book.addEventListener('touchend',   e => {
-  const dx = e.changedTouches[0].clientX - sx;
-  if (Math.abs(dx) > 45) go(dx < 0 ? cur+1 : cur-1);
-});
-
-// ── Fullscreen ──
-function enterFullscreen() {
-  const el = document.documentElement;
-  const req = el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen || el.msRequestFullscreen;
-  if (req) {
-    req.call(el).catch(() => {}).finally(showBook);
-  } else {
-    showBook();
-  }
-}
-
-function showBook() {
-  gate.classList.add('hidden');
-  bw.classList.add('visible');
-  gatePhase = 'done';
-}
-
-// ── Gate phases ──
-// Phase 1: show rotate animation for 3s
-// Phase 2: swap icon for fullscreen button
-setTimeout(() => {
-  // Check if device likely needs rotation prompt (touch device)
-  const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
-
-  if (isTouch) {
-    // Show fullscreen button
-    rotIcon.style.display = 'none';
-    rotText.style.display = 'none';
-    fsBtn.classList.add('visible');
-    skipBtn.style.display = 'block';
-    gatePhase = 'fullscreen';
-  } else {
-    // Desktop: skip rotate gate entirely, go straight to book
-    showBook();
-  }
-}, 3000);
-
-// If fullscreen is not supported at all, hide the button
-if (!document.documentElement.requestFullscreen &&
-    !document.documentElement.webkitRequestFullscreen &&
-    !document.documentElement.mozRequestFullScreen &&
-    !document.documentElement.msRequestFullscreen) {
-  // Will just show skip link
-}
-
-// Listen for fullscreen change (user pressed Esc, etc.)
-document.addEventListener('fullscreenchange', () => {
-  if (gatePhase === 'fullscreen' && document.fullscreenElement) {
-    showBook();
-  }
-});
-document.addEventListener('webkitfullscreenchange', () => {
-  if (gatePhase === 'fullscreen' && document.webkitFullscreenElement) {
-    showBook();
-  }
-});
+// ── Init ──
+goTo(0);
 </script>
 </body>
 </html>
