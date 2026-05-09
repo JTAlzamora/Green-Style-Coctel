@@ -3,601 +3,1079 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0a1208">
 <title>Green Style</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
 <style>
-*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+/* ═══════════════════════════════════════
+   RESET & BASE
+═══════════════════════════════════════ */
+*, *::before, *::after {
+  margin: 0; padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
 
 :root {
-  --gd: #1c2b1a;
-  --gm: #4a7030;
-  --gl: #8aaa60;
-  --gp: #c8dca0;
-  --cream: #f5f0e4;
-  --muted: #5a6a4a;
+  --c-deep:   #080f07;
+  --c-dark:   #111a0f;
+  --c-forest: #1e3018;
+  --c-green:  #3d6132;
+  --c-sage:   #7a9e60;
+  --c-mint:   #a8c88a;
+  --c-gold:   #c9a84c;
+  --c-cream:  #f0e8d4;
+  --c-ivory:  #faf6ec;
+  --c-warm:   rgba(240,232,212,0.85);
+  --ease-silk: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --ease-expo: cubic-bezier(0.19, 1, 0.22, 1);
 }
 
 html, body {
-  width:100%; height:100%;
-  overflow:hidden;
-  background:#0a120a;
-  font-family:'Cormorant Garamond', serif;
-  -webkit-tap-highlight-color:transparent;
-  user-select:none;
+  width: 100%; height: 100%;
+  overflow: hidden;
+  background: var(--c-deep);
+  font-family: 'Cormorant', serif;
+  cursor: none;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
-/* ══ SLIDES CONTAINER ══ */
-#reel {
-  position:fixed; inset:0;
-  display:flex;
-  flex-direction:column;
-  transition:transform 0.55s cubic-bezier(0.77,0,0.18,1);
-  will-change:transform;
+/* ═══════════════════════════════════════
+   CANVAS (particle system)
+═══════════════════════════════════════ */
+#canvas {
+  position: fixed; inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 1s ease;
+}
+#canvas.visible { opacity: 1; }
+
+/* ═══════════════════════════════════════
+   SCENES WRAPPER
+═══════════════════════════════════════ */
+#app {
+  position: fixed; inset: 0;
+  z-index: 2;
 }
 
-/* ══ SINGLE SLIDE ══ */
-.slide {
-  position:relative;
-  min-height:100svh;
-  width:100%;
-  display:flex;
-  flex-direction:column;
-  justify-content:flex-end;
-  overflow:hidden;
-  flex-shrink:0;
+.scene {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  overflow: hidden;
 }
 
-/* Background layers */
-.slide-bg {
-  position:absolute; inset:0;
-  z-index:0;
+.scene.active {
+  opacity: 1;
+  pointer-events: all;
 }
 
-/* Full-bleed photo */
-.slide-bg img {
-  width:100%; height:100%;
-  object-fit:cover;
-  object-position:center 15%;
+/* ═══════════════════════════════════════
+   TOUCH RIPPLE
+═══════════════════════════════════════ */
+.ripple {
+  position: fixed;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(169,200,138,0.3) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 999;
+  transform: scale(0);
+  animation: rippleOut 0.6s var(--ease-expo) forwards;
+}
+@keyframes rippleOut {
+  to { transform: scale(1); opacity: 0; }
 }
 
-/* Gradient overlays */
-.slide-bg::after {
-  content:'';
-  position:absolute; inset:0;
+/* ═══════════════════════════════════════
+   SCENE 1 — INTRO
+═══════════════════════════════════════ */
+#s1 {
+  background: var(--c-deep);
 }
 
-.slide[data-theme="photo"] .slide-bg::after {
-  background: linear-gradient(
-    to bottom,
-    rgba(10,18,10,0.35) 0%,
-    rgba(10,18,10,0.1) 30%,
-    rgba(10,18,10,0.7) 65%,
-    rgba(10,18,10,0.97) 100%
-  );
+.s1-photo {
+  position: absolute; inset: 0;
+  overflow: hidden;
 }
 
-.slide[data-theme="dark"] .slide-bg {
-  background: radial-gradient(ellipse 90% 70% at 50% 0%, #253d22 0%, #0e1a0c 70%);
+.s1-photo img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: center 10%;
+  transform: scale(1.12);
+  animation: slowZoom 18s var(--ease-silk) forwards;
+  filter: brightness(0.55) saturate(1.1);
 }
 
-.slide[data-theme="dark"] .slide-bg::after {
-  background: radial-gradient(ellipse 60% 50% at 80% 100%, rgba(138,170,96,0.06) 0%, transparent 60%);
+@keyframes slowZoom {
+  to { transform: scale(1.0); }
 }
 
-.slide[data-theme="cover"] .slide-bg {
-  background: #0e1a0c;
+/* Gradient veil */
+.s1-veil {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% 100%, rgba(8,15,7,0.98) 0%, rgba(8,15,7,0.3) 60%, transparent 100%),
+    radial-gradient(ellipse 100% 40% at 50% 0%, rgba(8,15,7,0.7) 0%, transparent 60%),
+    linear-gradient(to bottom, rgba(8,15,7,0.4) 0%, transparent 30%, transparent 50%, rgba(8,15,7,0.6) 100%);
 }
 
-.slide[data-theme="cover"] .slide-bg::after {
-  background: radial-gradient(ellipse 80% 60% at 50% 30%, rgba(74,112,48,0.2) 0%, transparent 70%);
+/* Subtle vignette border */
+.s1-vignette {
+  position: absolute; inset: 0;
+  box-shadow: inset 0 0 120px rgba(8,15,7,0.8);
 }
 
-/* ══ SLIDE CONTENT ══ */
-.slide-content {
-  position:relative; z-index:2;
-  padding:0 28px 36px;
-  display:flex; flex-direction:column; gap:0;
+/* Grain texture */
+.grain {
+  position: absolute; inset: 0;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-size: 200px;
 }
 
-/* ══ PROGRESS BAR ══ */
-#progress-bar {
-  position:fixed; top:0; left:0; right:0;
-  height:3px;
-  display:flex; gap:3px;
-  padding:0 16px;
-  z-index:100;
-  padding-top:10px;
+.s1-content {
+  position: relative; z-index: 3;
+  display: flex; flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 0 32px;
+  margin-top: 45svh;
 }
 
-.prog-seg {
-  flex:1; height:2px;
-  background:rgba(255,255,255,0.25);
-  border-radius:2px;
-  overflow:hidden;
-  position:relative;
+.s1-eyebrow {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; letter-spacing: 0.5em;
+  text-transform: uppercase;
+  color: var(--c-sage);
+  margin-bottom: 16px;
+  opacity: 0;
+  animation: fadeSlideUp 1s var(--ease-expo) 0.8s forwards;
 }
 
-.prog-fill {
-  position:absolute; top:0; left:0; height:100%;
-  background:#fff;
-  width:0%;
-  border-radius:2px;
-  transition:none;
+.s1-title {
+  font-family: 'Cormorant', serif;
+  font-weight: 300;
+  font-size: clamp(52px, 18vw, 80px);
+  letter-spacing: 0.15em;
+  line-height: 0.9;
+  color: var(--c-ivory);
+  text-transform: uppercase;
+  opacity: 0;
+  animation: fadeSlideUp 1.2s var(--ease-expo) 1.1s forwards;
 }
 
-.prog-seg.done .prog-fill { width:100%; }
-.prog-seg.active .prog-fill {
-  animation: fillBar var(--dur, 5s) linear forwards;
+.s1-title-accent {
+  display: block;
+  font-weight: 600;
+  font-style: italic;
+  font-size: clamp(30px, 10vw, 48px);
+  letter-spacing: 0.3em;
+  color: var(--c-mint);
+  margin-top: 4px;
 }
 
-@keyframes fillBar { from { width:0% } to { width:100% } }
+.s1-line {
+  width: 1px; height: 0;
+  background: linear-gradient(to bottom, transparent, var(--c-gold), transparent);
+  margin: 20px auto;
+  animation: growLine 1s var(--ease-expo) 1.8s forwards;
+}
+@keyframes growLine { to { height: 48px; } }
 
-/* ══ TYPOGRAPHY ══ */
-.label {
-  font-family:'DM Mono', monospace;
-  font-size:10px; letter-spacing:0.35em;
-  text-transform:uppercase;
-  color:var(--gl);
-  margin-bottom:10px;
-  display:flex; align-items:center; gap:8px;
-  opacity:0;
-  animation:fadeUp 0.5s ease forwards;
+.s1-sub {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 15px;
+  letter-spacing: 0.08em;
+  color: rgba(240,232,212,0.55);
+  opacity: 0;
+  animation: fadeSlideUp 1s var(--ease-expo) 2.2s forwards;
 }
 
-.label::before {
-  content:''; display:block;
-  width:16px; height:0.5px;
-  background:var(--gl);
+.s1-cta {
+  position: absolute;
+  bottom: 52px;
+  left: 50%; transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  opacity: 0;
+  animation: fadeSlideUp 1s var(--ease-expo) 3s forwards;
 }
 
-.headline {
-  font-family:'Playfair Display', serif;
-  font-weight:700; font-style:italic;
-  line-height:1.0;
-  color:#fff;
-  margin-bottom:14px;
-  opacity:0;
-  animation:fadeUp 0.5s ease 0.1s forwards;
+.s1-cta-text {
+  font-family: 'DM Mono', monospace;
+  font-size: 8px; letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: rgba(169,200,138,0.6);
 }
 
-.headline .acc { color:var(--gl); }
-
-.body-text {
-  font-size:16px; line-height:1.7;
-  color:rgba(255,255,255,0.82);
-  margin-bottom:0;
-  opacity:0;
-  animation:fadeUp 0.5s ease 0.2s forwards;
+.s1-cta-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--c-sage);
+  animation: dotPulse 2s ease-in-out infinite;
+}
+@keyframes dotPulse {
+  0%, 100% { opacity: 0.3; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.2); }
 }
 
-.body-text strong { color:#fff; }
-.body-text em { color:var(--gp); font-style:italic; }
-
-/* Ornament */
-.orn {
-  color:var(--gl); letter-spacing:6px; font-size:11px;
-  opacity:0; margin-bottom:12px;
-  animation:fadeUp 0.5s ease 0.15s forwards;
+/* ═══════════════════════════════════════
+   SCENE 2 — HISTORIA
+═══════════════════════════════════════ */
+#s2 {
+  background: var(--c-dark);
 }
 
-@keyframes fadeUp {
-  from { opacity:0; transform:translateY(16px); }
-  to   { opacity:1; transform:translateY(0); }
+.s2-photo {
+  position: absolute; inset: 0;
+  overflow: hidden;
 }
 
-/* ══ COVER SLIDE ══ */
-.cover-wrap {
-  position:relative; z-index:2;
-  display:flex; flex-direction:column;
-  align-items:center; justify-content:center;
-  min-height:100svh;
-  padding:0 28px;
-  text-align:center;
-  gap:0;
+.s2-photo img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: center 20%;
+  transform: scale(1.05);
+  animation: s2Zoom 8s var(--ease-silk) forwards;
+  filter: brightness(0.35) saturate(0.8) hue-rotate(10deg);
+}
+@keyframes s2Zoom {
+  to { transform: scale(1.18); filter: brightness(0.3) saturate(0.8) hue-rotate(10deg); }
 }
 
-.cover-bg-letter {
-  position:absolute;
-  font-family:'Playfair Display', serif;
-  font-style:italic;
-  font-size:65vw;
-  color:var(--gl);
-  opacity:0.04;
-  line-height:1;
-  top:50%; left:50%;
-  transform:translate(-50%,-52%);
-  pointer-events:none;
-  z-index:1;
+.s2-veil {
+  position: absolute; inset: 0;
+  background:
+    linear-gradient(to bottom, rgba(8,15,7,0.5) 0%, rgba(8,15,7,0.2) 40%, rgba(8,15,7,0.85) 100%),
+    radial-gradient(ellipse 70% 50% at 30% 50%, rgba(61,97,50,0.15) 0%, transparent 60%);
 }
 
-.cover-eyebrow {
-  font-family:'DM Mono', monospace;
-  font-size:10px; letter-spacing:0.4em;
-  text-transform:uppercase;
-  color:var(--gl);
-  margin-bottom:20px;
-  opacity:0;
-  animation:fadeUp 0.6s ease 0.2s forwards;
-  position:relative; z-index:2;
+.s2-content {
+  position: relative; z-index: 3;
+  padding: 0 36px;
+  display: flex; flex-direction: column;
+  gap: 28px;
+  margin-top: 20svh;
 }
 
-.cover-title {
-  font-family:'Playfair Display', serif;
-  font-weight:700; font-style:italic;
-  font-size:22vw;
-  color:#fff;
-  line-height:0.88;
-  letter-spacing:-1px;
-  opacity:0;
-  animation:fadeUp 0.6s ease 0.35s forwards;
-  position:relative; z-index:2;
+.s2-phrase {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.9s var(--ease-expo), transform 0.9s var(--ease-expo);
 }
 
-.cover-title .acc { color:var(--gl); }
-
-.cover-divider {
-  display:flex; align-items:center; gap:12px;
-  margin:22px auto;
-  width:70%;
-  opacity:0;
-  animation:fadeUp 0.6s ease 0.5s forwards;
-  position:relative; z-index:2;
-}
-.cover-divider-line { flex:1; height:0.5px; background:var(--gl); opacity:0.35; }
-.cover-divider span { color:var(--gl); font-size:12px; opacity:0.6; }
-
-.cover-sub {
-  font-size:15px; font-style:italic;
-  color:var(--gp);
-  line-height:1.8;
-  opacity:0;
-  animation:fadeUp 0.6s ease 0.6s forwards;
-  position:relative; z-index:2;
+.s2-phrase.in {
+  opacity: 1;
+  transform: translateY(0);
 }
 
-.cover-meta {
-  font-family:'DM Mono', monospace;
-  font-size:9px; letter-spacing:0.3em;
-  text-transform:uppercase;
-  color:rgba(138,170,96,0.5);
-  margin-top:10px;
-  opacity:0;
-  animation:fadeUp 0.6s ease 0.75s forwards;
-  position:relative; z-index:2;
+.s2-phrase.out {
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
 }
 
-/* ══ INGREDIENTS SLIDE ══ */
-.ing-list {
-  display:flex; flex-direction:column;
-  gap:10px; margin-top:4px;
-  opacity:0;
-  animation:fadeUp 0.5s ease 0.25s forwards;
+.s2-phrase-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 8px; letter-spacing: 0.45em;
+  text-transform: uppercase;
+  color: var(--c-sage);
+  margin-bottom: 10px;
 }
 
-.ing-row {
-  display:flex; align-items:flex-start;
-  gap:14px;
-  padding:10px 14px;
-  background:rgba(138,170,96,0.07);
-  border:0.5px solid rgba(138,170,96,0.2);
-  border-radius:4px;
+.s2-phrase-text {
+  font-family: 'Cormorant', serif;
+  font-weight: 300;
+  font-size: clamp(26px, 7.5vw, 40px);
+  line-height: 1.2;
+  color: var(--c-cream);
+  letter-spacing: 0.02em;
 }
 
-.ing-qty {
-  font-family:'DM Mono', monospace;
-  font-size:10px; color:var(--gl);
-  letter-spacing:0.1em;
-  flex-shrink:0; padding-top:2px;
-  min-width:38px;
+.s2-phrase-text em {
+  font-style: italic;
+  color: var(--c-mint);
 }
 
-.ing-info {}
+/* Floating elements */
+.s2-floater {
+  position: absolute;
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  color: rgba(169,200,138,0.12);
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  pointer-events: none;
+  animation: floatDrift 8s ease-in-out infinite;
+}
+@keyframes floatDrift {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(-12px) rotate(2deg); }
+}
+
+/* ═══════════════════════════════════════
+   SCENE 3 — INGREDIENTES
+═══════════════════════════════════════ */
+#s3 {
+  background: var(--c-forest);
+  background: radial-gradient(ellipse 100% 80% at 50% 100%, #0d1e0a 0%, #080f07 60%);
+}
+
+.s3-content {
+  position: relative; z-index: 3;
+  display: flex; flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 0 28px;
+  gap: 0;
+}
+
+.s3-header {
+  font-family: 'DM Mono', monospace;
+  font-size: 8px; letter-spacing: 0.5em;
+  text-transform: uppercase;
+  color: var(--c-sage);
+  margin-bottom: 40px;
+  opacity: 0;
+  animation: fadeSlideUp 0.8s var(--ease-expo) 0.1s forwards;
+}
+
+.ing-item {
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+
+.ing-inner {
+  display: flex; align-items: baseline;
+  justify-content: center; gap: 16px;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.7s var(--ease-expo), transform 0.7s var(--ease-expo);
+}
+
+.ing-inner.in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.ing-number {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--c-gold);
+  opacity: 0.6;
+  letter-spacing: 0.1em;
+}
+
 .ing-name {
-  font-size:16px; font-style:italic; color:#fff;
-  line-height:1.2;
-}
-.ing-desc {
-  font-size:12px; color:rgba(200,220,160,0.65);
-  line-height:1.4; margin-top:2px;
-}
-
-/* ══ TAP HINT ══ */
-#tap-hint {
-  position:fixed; bottom:18px; left:50%; transform:translateX(-50%);
-  font-family:'DM Mono', monospace;
-  font-size:9px; letter-spacing:0.3em;
-  text-transform:uppercase;
-  color:rgba(255,255,255,0.25);
-  z-index:100;
-  pointer-events:none;
-  animation:fadeHint 3s ease 1.5s forwards;
+  font-family: 'Cormorant', serif;
+  font-weight: 300;
+  font-size: clamp(32px, 10vw, 52px);
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--c-ivory);
+  line-height: 1.1;
 }
 
-@keyframes fadeHint {
-  0%   { opacity:1; }
-  70%  { opacity:1; }
-  100% { opacity:0; }
+.ing-name.highlight { color: var(--c-mint); }
+
+.s3-divider {
+  width: 40px; height: 0.5px;
+  background: var(--c-gold);
+  opacity: 0.4;
+  margin: 28px auto;
+  opacity: 0;
+  animation: fadeIn 1s ease 0.5s forwards;
+}
+@keyframes fadeIn { to { opacity: 0.4; } }
+
+.s3-footer {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 14px;
+  letter-spacing: 0.12em;
+  color: rgba(169,200,138,0.5);
+  opacity: 0;
+  animation: fadeSlideUp 1s var(--ease-expo) 0.5s forwards;
 }
 
-/* ══ SLIDE INDICATOR ══ */
-#slide-dots {
-  position:fixed;
-  right:12px; top:50%; transform:translateY(-50%);
-  display:flex; flex-direction:column; gap:5px;
-  z-index:100;
+/* Orbiting ring */
+.s3-ring {
+  position: absolute;
+  width: 85vw; height: 85vw;
+  border-radius: 50%;
+  border: 0.5px solid rgba(122,158,96,0.08);
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  animation: ringRotate 25s linear infinite;
+  pointer-events: none;
 }
 
-.sdot {
-  width:3px; height:3px;
-  border-radius:50%;
-  background:rgba(255,255,255,0.2);
-  transition:all 0.3s;
+.s3-ring-2 {
+  width: 65vw; height: 65vw;
+  border-color: rgba(201,168,76,0.06);
+  animation-direction: reverse;
+  animation-duration: 18s;
 }
-.sdot.on {
-  background:#fff;
-  height:18px;
-  border-radius:2px;
+
+@keyframes ringRotate { to { transform: translate(-50%, -50%) rotate(360deg); } }
+
+/* ═══════════════════════════════════════
+   SCENE 4 — FINALE
+═══════════════════════════════════════ */
+#s4 {
+  background: var(--c-deep);
+}
+
+.s4-photo {
+  position: absolute; inset: 0;
+  overflow: hidden;
+}
+
+.s4-photo img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: center 0%;
+  transform: scale(1.0);
+  animation: s4Float 6s var(--ease-silk) forwards;
+  filter: brightness(0.3) saturate(0.7);
+}
+@keyframes s4Float {
+  to { transform: scale(1.06); filter: brightness(0.25) saturate(0.6); }
+}
+
+.s4-veil {
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 80% 80% at 50% 50%, rgba(8,15,7,0.5) 0%, rgba(8,15,7,0.9) 100%);
+}
+
+.s4-content {
+  position: relative; z-index: 3;
+  display: flex; flex-direction: column;
+  align-items: center; text-align: center;
+  padding: 0 36px;
+  gap: 0;
+}
+
+.s4-line1 {
+  font-family: 'Cormorant', serif;
+  font-weight: 300;
+  font-size: clamp(20px, 5.5vw, 30px);
+  letter-spacing: 0.04em;
+  line-height: 1.5;
+  color: rgba(240,232,212,0.7);
+  opacity: 0;
+  animation: fadeSlideUp 1.2s var(--ease-expo) 0.3s forwards;
+}
+
+.s4-gap { height: 28px; }
+
+.s4-line2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: clamp(16px, 4.5vw, 24px);
+  letter-spacing: 0.06em;
+  line-height: 1.6;
+  color: rgba(169,200,138,0.6);
+  opacity: 0;
+  animation: fadeSlideUp 1.2s var(--ease-expo) 1.2s forwards;
+}
+
+.s4-gap2 { height: 40px; }
+
+.s4-cta {
+  font-family: 'Cormorant', serif;
+  font-weight: 300;
+  font-size: clamp(18px, 5vw, 26px);
+  letter-spacing: 0.12em;
+  color: var(--c-cream);
+  opacity: 0;
+  animation: fadeSlideUp 1s var(--ease-expo) 2.2s forwards;
+}
+
+.s4-gap3 { height: 52px; }
+
+.s4-logo {
+  display: flex; flex-direction: column; align-items: center;
+  opacity: 0;
+  animation: fadeSlideUp 1.2s var(--ease-expo) 3s forwards;
+}
+
+.s4-logo-name {
+  font-family: 'Cormorant', serif;
+  font-weight: 300;
+  font-size: clamp(36px, 11vw, 56px);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--c-ivory);
+  line-height: 0.9;
+}
+
+.s4-logo-sub {
+  font-family: 'DM Mono', monospace;
+  font-size: 8px; letter-spacing: 0.5em;
+  text-transform: uppercase;
+  color: var(--c-sage);
+  margin-top: 10px;
+}
+
+/* Gold shimmer on logo */
+.s4-shimmer {
+  position: absolute;
+  width: 2px; height: 60px;
+  background: linear-gradient(to bottom, transparent, var(--c-gold), transparent);
+  opacity: 0;
+  animation: shimmerFly 1s var(--ease-expo) 3.8s forwards;
+}
+@keyframes shimmerFly {
+  0%  { opacity: 0; transform: translateX(-60px) rotate(20deg); }
+  40% { opacity: 0.8; }
+  100%{ opacity: 0; transform: translateX(60px) rotate(20deg); }
+}
+
+/* ═══════════════════════════════════════
+   SHARED ANIMATIONS
+═══════════════════════════════════════ */
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ═══════════════════════════════════════
+   TRANSITION OVERLAY
+═══════════════════════════════════════ */
+#transition {
+  position: fixed; inset: 0;
+  z-index: 50;
+  background: var(--c-deep);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ═══════════════════════════════════════
+   PROGRESS DOTS
+═══════════════════════════════════════ */
+#progress {
+  position: fixed;
+  top: 18px; left: 50%;
+  transform: translateX(-50%);
+  display: flex; gap: 6px;
+  z-index: 60;
+}
+
+.pdot {
+  width: 24px; height: 2px;
+  border-radius: 2px;
+  background: rgba(255,255,255,0.2);
+  overflow: hidden;
+  position: relative;
+}
+
+.pdot-fill {
+  position: absolute; top:0; left:0;
+  height: 100%;
+  background: rgba(169,200,138,0.8);
+  width: 0%;
+  border-radius: 2px;
+}
+
+.pdot.done .pdot-fill { width: 100%; }
+.pdot.active .pdot-fill {
+  animation: pdotFill var(--d, 5s) linear forwards;
+}
+
+@keyframes pdotFill { to { width: 100%; } }
+
+/* ═══════════════════════════════════════
+   LIGHT STREAK ACCENT
+═══════════════════════════════════════ */
+.light-streak {
+  position: absolute;
+  width: 1px;
+  background: linear-gradient(to bottom, transparent, rgba(201,168,76,0.4), transparent);
+  pointer-events: none;
+  animation: streakFade 4s ease-in-out infinite;
+}
+@keyframes streakFade {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 1; }
+}
+
+/* Scene enter animation */
+.scene {
+  transition: opacity 0.15s ease;
 }
 </style>
 </head>
 <body>
 
-<!-- Progress bar -->
-<div id="progress-bar"></div>
+<!-- Particle canvas -->
+<canvas id="canvas"></canvas>
 
-<!-- Side dots -->
-<div id="slide-dots"></div>
+<!-- Progress dots -->
+<div id="progress">
+  <div class="pdot" id="pd0"><div class="pdot-fill"></div></div>
+  <div class="pdot" id="pd1"><div class="pdot-fill"></div></div>
+  <div class="pdot" id="pd2"><div class="pdot-fill"></div></div>
+  <div class="pdot" id="pd3"><div class="pdot-fill"></div></div>
+</div>
 
-<!-- Tap hint -->
-<div id="tap-hint">Toca para avanzar</div>
+<!-- Transition overlay -->
+<div id="transition"></div>
 
-<!-- ══ REEL ══ -->
-<div id="reel">
+<!-- App -->
+<div id="app">
 
-  <!-- 0: COVER -->
-  <div class="slide" data-theme="cover" data-dur="4">
-    <div class="slide-bg"></div>
-    <div class="cover-wrap">
-      <div class="cover-bg-letter">G</div>
-      <div class="cover-eyebrow">Concurso de Coctelería · Mallorca 2026</div>
-      <div class="cover-title">Green<br><span class="acc">Style</span></div>
-      <div class="cover-divider">
-        <div class="cover-divider-line"></div>
-        <span>✦</span>
-        <div class="cover-divider-line"></div>
+  <!-- ═══ SCENE 1 ═══ -->
+  <div class="scene active" id="s1">
+    <div class="s1-photo">
+      <img src="Foto_Cocktail.jpeg" alt="">
+    </div>
+    <div class="s1-veil"></div>
+    <div class="s1-vignette"></div>
+    <div class="grain"></div>
+
+    <!-- Light streaks -->
+    <div class="light-streak" style="left:28%;top:10%;height:120px;animation-delay:0s;"></div>
+    <div class="light-streak" style="left:72%;top:20%;height:80px;animation-delay:1.5s;"></div>
+
+    <div class="s1-content">
+      <div class="s1-eyebrow">Concurso de Coctelería · Mallorca 2026</div>
+      <div class="s1-title">
+        GREEN
+        <span class="s1-title-accent">Style</span>
       </div>
-      <div class="cover-sub">Vodka · Pistacho · Maracuyá · Coco</div>
-      <div class="cover-meta">Un cóctel original · Mallorca</div>
+      <div class="s1-line"></div>
+      <div class="s1-sub">Una experiencia inspirada en Mallorca</div>
+    </div>
+
+    <div class="s1-cta">
+      <div class="s1-cta-text">Toca para descubrir</div>
+      <div class="s1-cta-dot"></div>
     </div>
   </div>
 
-  <!-- 1: FOTO + FRASE -->
-  <div class="slide" data-theme="photo" data-dur="5">
-    <div class="slide-bg">
-      <img src="Foto_Cocktail.jpeg" alt="Green Style" />
+  <!-- ═══ SCENE 2 ═══ -->
+  <div class="scene" id="s2">
+    <div class="s2-photo">
+      <img src="Foto_Cocktail.jpeg" alt="">
     </div>
-    <div class="slide-content">
-      <div class="label">La imagen</div>
-      <div class="headline" style="font-size:clamp(32px,9vw,52px);">Que entre<br>por los ojos</div>
-      <div class="body-text">La copa percepción de 25 cl. Bordeada con azúcar moreno. Pistachos enteros en el centro. Ralladura de lima, naranja y pistacho en la superficie. Hierbabuena y giro de naranja en el borde.</div>
-    </div>
-  </div>
+    <div class="s2-veil"></div>
+    <div class="grain"></div>
 
-  <!-- 2: INSPIRACIÓN -->
-  <div class="slide" data-theme="dark" data-dur="6">
-    <div class="slide-bg"></div>
-    <div class="slide-content" style="justify-content:flex-end; padding-bottom:50px;">
-      <div class="label">La inspiración</div>
-      <div class="headline" style="font-size:clamp(28px,8vw,44px);">El color<br>de la isla</div>
-      <div class="body-text">
-        Mallorca tiene una luz particular. Al atardecer, la Serra de Tramuntana adopta un <strong>verde profundo</strong> que se funde con el oro del sol poniente.<br><br>
-        Ese instante fue el punto de partida. El pistacho no es solo un ingrediente — <em>es el color de la isla cuando la luz llega de lado.</em>
+    <!-- Floating atmosphere words -->
+    <div class="s2-floater" style="top:15%;left:8%;animation-delay:0s;">Mallorca</div>
+    <div class="s2-floater" style="top:25%;right:6%;animation-delay:1.2s;">Mediterráneo</div>
+    <div class="s2-floater" style="bottom:28%;left:5%;animation-delay:0.6s;">Verano</div>
+
+    <div class="s2-content">
+      <div class="s2-phrase" id="ph0">
+        <div class="s2-phrase-label">Inspiración</div>
+        <div class="s2-phrase-text">Inspirado en la<br><em>esencia del Mediterráneo</em></div>
       </div>
-    </div>
-  </div>
-
-  <!-- 3: ESENCIA -->
-  <div class="slide" data-theme="dark" data-dur="5">
-    <div class="slide-bg"></div>
-    <div class="slide-content" style="padding-bottom:50px;">
-      <div class="orn">· · ✦ · ·</div>
-      <div class="label">La esencia</div>
-      <div class="headline" style="font-size:clamp(28px,8vw,44px);">Mediterráneo<br><span class="acc">y trópico</span></div>
-      <div class="body-text">
-        El maracuyá y el coco traen el trópico. La lima y el pistacho anclan el cóctel al Mediterráneo.<br><br>
-        <strong>El resultado: un diálogo entre dos mundos que se complementan a la perfección.</strong>
+      <div class="s2-phrase" id="ph1">
+        <div class="s2-phrase-label">Concepto</div>
+        <div class="s2-phrase-text">Pistacho, cítricos e hierbabuena<br><em>reinterpretados en copa</em></div>
       </div>
-    </div>
-  </div>
-
-  <!-- 4: INGREDIENTES -->
-  <div class="slide" data-theme="dark" data-dur="7">
-    <div class="slide-bg"></div>
-    <div class="slide-content" style="padding-bottom:42px;">
-      <div class="label">Los ingredientes</div>
-      <div class="headline" style="font-size:clamp(24px,7vw,36px); margin-bottom:12px;">Cada uno<br>con su porqué</div>
-      <div class="ing-list">
-        <div class="ing-row">
-          <span class="ing-qty">35 ml</span>
-          <div class="ing-info">
-            <div class="ing-name">Vodka</div>
-            <div class="ing-desc">La base neutra que deja hablar al resto de ingredientes sin imponer carácter propio.</div>
-          </div>
-        </div>
-        <div class="ing-row">
-          <span class="ing-qty">40 ml</span>
-          <div class="ing-info">
-            <div class="ing-name">Licor de pistacho</div>
-            <div class="ing-desc">El alma del cóctel. Cremoso, vegetal y ligeramente dulce — el verde de Mallorca en copa.</div>
-          </div>
-        </div>
-        <div class="ing-row">
-          <span class="ing-qty">50 ml</span>
-          <div class="ing-info">
-            <div class="ing-name">Zumo de maracuyá</div>
-            <div class="ing-desc">El trópico que irrumpe. Aporta acidez viva y ese aroma inconfundible que abre el paladar.</div>
-          </div>
-        </div>
-        <div class="ing-row">
-          <span class="ing-qty">15 ml</span>
-          <div class="ing-info">
-            <div class="ing-name">Puré de coco</div>
-            <div class="ing-desc">Redondea y suaviza. Da la textura aterciopelada que hace que cada sorbo sea envolvente.</div>
-          </div>
-        </div>
-        <div class="ing-row">
-          <span class="ing-qty">20 ml</span>
-          <div class="ing-info">
-            <div class="ing-name">Jarabe de vainilla</div>
-            <div class="ing-desc">Equilibra la acidez y aporta un fondo dulce y cálido que une todos los sabores.</div>
-          </div>
-        </div>
-        <div class="ing-row">
-          <span class="ing-qty">15 ml</span>
-          <div class="ing-info">
-            <div class="ing-name">Zumo de lima</div>
-            <div class="ing-desc">El punto de equilibrio final. Limpio, cítrico, imprescindible.</div>
-          </div>
-        </div>
+      <div class="s2-phrase" id="ph2">
+        <div class="s2-phrase-label">Alma</div>
+        <div class="s2-phrase-text">Una interpretación <em>fresca<br>y sofisticada</em> de Mallorca</div>
       </div>
     </div>
   </div>
 
-  <!-- 5: CIERRE -->
-  <div class="slide" data-theme="photo" data-dur="3">
-    <div class="slide-bg">
-      <img src="Foto_Cocktail.jpeg" alt="Green Style" style="object-position:center 25%;" />
+  <!-- ═══ SCENE 3 ═══ -->
+  <div class="scene" id="s3">
+    <div class="s3-ring"></div>
+    <div class="s3-ring s3-ring-2"></div>
+    <div class="grain" style="opacity:0.04;"></div>
+
+    <div class="s3-content">
+      <div class="s3-header">Los ingredientes</div>
+
+      <div class="ing-item">
+        <div class="ing-inner" id="i0">
+          <span class="ing-number">01</span>
+          <span class="ing-name highlight">Pistacho</span>
+        </div>
+      </div>
+      <div class="ing-item">
+        <div class="ing-inner" id="i1">
+          <span class="ing-number">02</span>
+          <span class="ing-name">Cítricos</span>
+        </div>
+      </div>
+      <div class="ing-item">
+        <div class="ing-inner" id="i2">
+          <span class="ing-number">03</span>
+          <span class="ing-name">Hierbabuena</span>
+        </div>
+      </div>
+      <div class="ing-item">
+        <div class="ing-inner" id="i3">
+          <span class="ing-number">04</span>
+          <span class="ing-name">Coco</span>
+        </div>
+      </div>
+
+      <div class="s3-divider"></div>
+      <div class="s3-footer">Frescura · Equilibrio · Cremosidad</div>
     </div>
-    <div class="slide-content" style="align-items:center; text-align:center; padding-bottom:60px;">
-      <div class="orn" style="text-align:center;">· · ✦ · ·</div>
-      <div class="headline" style="font-size:clamp(40px,12vw,64px); text-align:center;">Green<br><span class="acc">Style</span></div>
-      <div class="body-text" style="text-align:center; font-size:14px; letter-spacing:0.05em;">
-        Hecho en Mallorca · Con amor y pistacho
+  </div>
+
+  <!-- ═══ SCENE 4 ═══ -->
+  <div class="scene" id="s4">
+    <div class="s4-photo">
+      <img src="Foto_Cocktail.jpeg" alt="" style="object-position:center 5%;">
+    </div>
+    <div class="s4-veil"></div>
+    <div class="grain" style="opacity:0.025;"></div>
+
+    <div class="light-streak" style="left:50%;top:5%;height:100px;transform:translateX(-50%);animation-delay:3s;"></div>
+
+    <div class="s4-content">
+      <div class="s4-line1">Esperamos que Green Style<br>deje huella en vuestro recuerdo</div>
+      <div class="s4-gap"></div>
+      <div class="s4-line2">Que cada sorbo os transporte<br>a Mallorca</div>
+      <div class="s4-gap2"></div>
+      <div class="s4-cta">Disfrutad la experiencia</div>
+      <div class="s4-gap3"></div>
+      <div class="s4-logo">
+        <div class="s4-logo-name">Green Style</div>
+        <div class="s4-logo-sub">Mallorca · 2026</div>
+        <div class="s4-shimmer"></div>
       </div>
     </div>
   </div>
 
-</div><!-- /reel -->
+</div>
 
 <script>
-const slides = Array.from(document.querySelectorAll('.slide'));
-const N = slides.length;
-let cur = 0;
-let timer = null;
-let startY = 0;
-let paused = false;
+/* ═══════════════════════════════════════
+   PARTICLE SYSTEM
+═══════════════════════════════════════ */
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+let particles = [];
+let W, H;
 
-const reel       = document.getElementById('reel');
-const progressBar= document.getElementById('progress-bar');
-const sideDots   = document.getElementById('slide-dots');
+function resizeCanvas() {
+  W = canvas.width  = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
 
-// ── Build progress segments ──
-const segs = [];
-slides.forEach((s, i) => {
-  const seg = document.createElement('div');
-  seg.className = 'prog-seg';
-  const fill = document.createElement('div');
-  fill.className = 'prog-fill';
-  seg.appendChild(fill);
-  progressBar.appendChild(seg);
-  segs.push(seg);
-});
-
-// ── Build side dots ──
-const sdots = [];
-slides.forEach((s, i) => {
-  const d = document.createElement('div');
-  d.className = 'sdot' + (i===0?' on':'');
-  sideDots.appendChild(d);
-  sdots.push(d);
-});
-
-// ── Navigate ──
-function goTo(i, fromAuto) {
-  if (i < 0 || i >= N) return;
-
-  clearTimeout(timer);
-
-  // Mark old segs
-  segs.forEach((seg, j) => {
-    seg.classList.remove('active','done');
-    seg.querySelector('.prog-fill').style.animation = 'none';
-    if (j < i) seg.classList.add('done');
-  });
-
-  cur = i;
-  reel.style.transform = `translateY(-${cur * 100}svh)`;
-
-  // Restart animations on new slide
-  restartSlideAnims(slides[cur]);
-
-  // Activate progress segment
-  const dur = parseFloat(slides[cur].dataset.dur) || 5;
-  const seg = segs[cur];
-  seg.classList.add('active');
-  seg.style.setProperty('--dur', dur + 's');
-  // Force reflow to restart animation
-  void seg.querySelector('.prog-fill').offsetWidth;
-  seg.querySelector('.prog-fill').style.animation = '';
-
-  // Update side dots
-  sdots.forEach((d,j) => {
-    d.classList.toggle('on', j===cur);
-  });
-
-  // Auto-advance
-  if (cur < N-1) {
-    timer = setTimeout(() => goTo(cur+1, true), dur * 1000);
-  } else {
-    // Last slide: fill and stay
-    timer = setTimeout(() => {}, dur * 1000);
+class Particle {
+  constructor(type) {
+    this.type = type || 'dust';
+    this.reset();
+  }
+  reset() {
+    this.x = Math.random() * W;
+    this.y = H + 10;
+    this.size = Math.random() * 2.5 + 0.5;
+    this.speedY = -(Math.random() * 0.4 + 0.1);
+    this.speedX = (Math.random() - 0.5) * 0.3;
+    this.life = 1;
+    this.decay = Math.random() * 0.002 + 0.001;
+    this.wobble = Math.random() * Math.PI * 2;
+    this.wobbleSpeed = Math.random() * 0.02 + 0.005;
+    if (this.type === 'citrus') {
+      this.size = Math.random() * 3 + 1;
+      this.speedY = -(Math.random() * 0.3 + 0.05);
+      this.decay = Math.random() * 0.0015 + 0.0005;
+      this.rotation = Math.random() * Math.PI * 2;
+      this.rotSpeed = (Math.random() - 0.5) * 0.02;
+    }
+  }
+  update() {
+    this.wobble += this.wobbleSpeed;
+    this.x += this.speedX + Math.sin(this.wobble) * 0.3;
+    this.y += this.speedY;
+    this.life -= this.decay;
+    if (this.type === 'citrus') this.rotation += this.rotSpeed;
+    if (this.life <= 0 || this.y < -20) this.reset();
+  }
+  draw() {
+    ctx.save();
+    ctx.globalAlpha = this.life * 0.7;
+    if (this.type === 'citrus') {
+      ctx.translate(this.x, this.y);
+      ctx.rotate(this.rotation);
+      ctx.strokeStyle = `rgba(201,168,76,${this.life * 0.5})`;
+      ctx.lineWidth = 0.5;
+      ctx.beginPath();
+      ctx.ellipse(0, 0, this.size * 2, this.size * 0.6, 0, 0, Math.PI * 2);
+      ctx.stroke();
+    } else {
+      ctx.fillStyle = `rgba(169,200,138,${this.life * 0.4})`;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
   }
 }
 
-function restartSlideAnims(slide) {
-  const animated = slide.querySelectorAll('.label, .headline, .body-text, .orn, .ing-list, .cover-eyebrow, .cover-title, .cover-divider, .cover-sub, .cover-meta');
-  animated.forEach(el => {
+// Create particles
+for (let i = 0; i < 35; i++) particles.push(new Particle('dust'));
+for (let i = 0; i < 15; i++) particles.push(new Particle('citrus'));
+// Spread initial positions
+particles.forEach(p => { p.y = Math.random() * H; });
+
+function animateParticles() {
+  ctx.clearRect(0, 0, W, H);
+  particles.forEach(p => { p.update(); p.draw(); });
+  requestAnimationFrame(animateParticles);
+}
+animateParticles();
+
+/* ═══════════════════════════════════════
+   SCENE MANAGEMENT
+═══════════════════════════════════════ */
+const scenes = [
+  document.getElementById('s1'),
+  document.getElementById('s2'),
+  document.getElementById('s3'),
+  document.getElementById('s4'),
+];
+const durations = [4500, 6000, 6000, 6000]; // ms per scene
+const overlay = document.getElementById('transition');
+const dots = [
+  document.getElementById('pd0'),
+  document.getElementById('pd1'),
+  document.getElementById('pd2'),
+  document.getElementById('pd3'),
+];
+
+let currentScene = 0;
+let autoTimer = null;
+let isTransitioning = false;
+
+function startProgress(idx) {
+  dots.forEach((d, i) => {
+    d.classList.remove('active', 'done');
+    d.querySelector('.pdot-fill').style.animation = 'none';
+    if (i < idx) d.classList.add('done');
+  });
+  const dot = dots[idx];
+  dot.style.setProperty('--d', (durations[idx] / 1000) + 's');
+  void dot.querySelector('.pdot-fill').offsetWidth;
+  dot.querySelector('.pdot-fill').style.animation = '';
+  dot.classList.add('active');
+}
+
+function showScene(idx, direction) {
+  if (idx < 0 || idx >= scenes.length || isTransitioning) return;
+  isTransitioning = true;
+  clearTimeout(autoTimer);
+
+  // Fade to black
+  overlay.style.transition = 'opacity 0.35s ease';
+  overlay.style.opacity = '1';
+
+  setTimeout(() => {
+    // Switch scene
+    scenes.forEach(s => s.classList.remove('active'));
+    scenes[idx].classList.remove('active');
+
+    // Reset scene animations
+    resetSceneAnims(idx);
+
+    setTimeout(() => {
+      scenes[idx].classList.add('active');
+      currentScene = idx;
+
+      // Scene-specific setup
+      if (idx === 0) setupS1();
+      if (idx === 1) setupS2();
+      if (idx === 2) setupS3();
+      if (idx === 3) setupS4();
+
+      // Show particles on dark scenes
+      canvas.classList.toggle('visible', idx !== 0 || true);
+
+      startProgress(idx);
+
+      // Fade in
+      overlay.style.transition = 'opacity 0.5s ease';
+      overlay.style.opacity = '0';
+      isTransitioning = false;
+
+      // Auto-advance (except last)
+      if (idx < scenes.length - 1) {
+        autoTimer = setTimeout(() => showScene(idx + 1), durations[idx]);
+      }
+    }, 50);
+
+  }, 380);
+}
+
+/* ── Scene 1 setup ── */
+function setupS1() {
+  // Reset img animation
+  const img = document.querySelector('#s1 img');
+  img.style.animation = 'none';
+  void img.offsetWidth;
+  img.style.animation = '';
+}
+
+/* ── Scene 2 setup: sequential phrases ── */
+function setupS2() {
+  const phrases = [
+    document.getElementById('ph0'),
+    document.getElementById('ph1'),
+    document.getElementById('ph2'),
+  ];
+  phrases.forEach(p => { p.classList.remove('in','out'); });
+
+  const timing = [100, 2000, 4000];
+  timing.forEach((t, i) => {
+    setTimeout(() => {
+      if (i > 0) phrases[i-1].classList.add('out');
+      phrases[i].classList.add('in');
+    }, t);
+  });
+
+  // Reset photo animation
+  const img = document.querySelector('#s2 img');
+  img.style.animation = 'none';
+  void img.offsetWidth;
+  img.style.animation = '';
+}
+
+/* ── Scene 3 setup: staggered ingredients ── */
+function setupS3() {
+  const items = ['i0','i1','i2','i3'].map(id => document.getElementById(id));
+  items.forEach(el => el.classList.remove('in'));
+  items.forEach((el, i) => {
+    setTimeout(() => el.classList.add('in'), 150 + i * 500);
+  });
+}
+
+/* ── Scene 4 setup ── */
+function setupS4() {
+  const img = document.querySelector('#s4 img');
+  img.style.animation = 'none';
+  void img.offsetWidth;
+  img.style.animation = '';
+}
+
+function resetSceneAnims(idx) {
+  const els = scenes[idx].querySelectorAll(
+    '.s1-eyebrow, .s1-title, .s1-line, .s1-sub, .s1-cta,' +
+    '.s3-header, .s3-divider, .s3-footer,' +
+    '.s4-line1, .s4-line2, .s4-cta, .s4-logo, .s4-shimmer'
+  );
+  els.forEach(el => {
     el.style.animation = 'none';
     void el.offsetWidth;
     el.style.animation = '';
   });
 }
 
-// ── Touch / click ──
-let touchStartY = 0, touchStartX = 0;
+/* ═══════════════════════════════════════
+   INTERACTION
+═══════════════════════════════════════ */
+function createRipple(x, y) {
+  const r = document.createElement('div');
+  r.className = 'ripple';
+  const size = 120;
+  r.style.cssText = `
+    width:${size}px; height:${size}px;
+    left:${x - size/2}px; top:${y - size/2}px;
+  `;
+  document.body.appendChild(r);
+  setTimeout(() => r.remove(), 700);
+}
 
+document.getElementById('app').addEventListener('click', e => {
+  if (isTransitioning) return;
+  createRipple(e.clientX, e.clientY);
+  if (currentScene < scenes.length - 1) {
+    showScene(currentScene + 1);
+  }
+});
+
+// Touch swipe
+let touchY0 = 0;
 document.addEventListener('touchstart', e => {
-  touchStartY = e.touches[0].clientY;
-  touchStartX = e.touches[0].clientX;
+  touchY0 = e.touches[0].clientY;
 }, {passive:true});
 
 document.addEventListener('touchend', e => {
-  const dy = touchStartY - e.changedTouches[0].clientY;
-  const dx = Math.abs(touchStartX - e.changedTouches[0].clientX);
-  if (dx > 40) return; // horizontal swipe, ignore
-  if (dy > 30)       goTo(cur+1);
-  else if (dy < -30) goTo(cur-1);
-  else               goTo(cur+1); // tap = advance
+  const dy = touchY0 - e.changedTouches[0].clientY;
+  if (Math.abs(dy) > 50) {
+    if (dy > 0 && currentScene < scenes.length - 1) showScene(currentScene + 1);
+    if (dy < 0 && currentScene > 0) showScene(currentScene - 1);
+  }
 }, {passive:true});
 
-// ── Keyboard (desktop) ──
+// Keyboard
 document.addEventListener('keydown', e => {
-  if (e.key==='ArrowDown' || e.key==='ArrowRight' || e.key===' ') goTo(cur+1);
-  if (e.key==='ArrowUp'   || e.key==='ArrowLeft')                  goTo(cur-1);
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') {
+    if (currentScene < scenes.length - 1) showScene(currentScene + 1);
+  }
+  if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+    if (currentScene > 0) showScene(currentScene - 1);
+  }
 });
 
-// ── Scroll (desktop) ──
-let wheelLock = false;
-document.addEventListener('wheel', e => {
-  if (wheelLock) return;
-  wheelLock = true;
-  if (e.deltaY > 0) goTo(cur+1);
-  else              goTo(cur-1);
-  setTimeout(()=>{ wheelLock=false; }, 700);
-}, {passive:true});
+/* ═══════════════════════════════════════
+   AUDIO (optional, very subtle)
+═══════════════════════════════════════ */
+function initAudio() {
+  try {
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtx) return;
+    const ac = new AudioCtx();
 
-// ── Init ──
-goTo(0);
+    function makeWave(freq, gain, dur, start) {
+      const osc = ac.createOscillator();
+      const gainNode = ac.createGain();
+      const filter = ac.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.value = 400;
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      gainNode.gain.setValueAtTime(0, ac.currentTime + start);
+      gainNode.gain.linearRampToValueAtTime(gain, ac.currentTime + start + dur * 0.3);
+      gainNode.gain.linearRampToValueAtTime(0, ac.currentTime + start + dur);
+      osc.connect(filter);
+      filter.connect(gainNode);
+      gainNode.connect(ac.destination);
+      osc.start(ac.currentTime + start);
+      osc.stop(ac.currentTime + start + dur);
+    }
+
+    // Very subtle ambient tones — like distant wind/sea
+    makeWave(80,  0.018, 8,  0);
+    makeWave(120, 0.012, 6,  2);
+    makeWave(55,  0.015, 10, 1);
+    makeWave(160, 0.008, 4,  4);
+    makeWave(95,  0.01,  7,  6);
+  } catch(e) {}
+}
+
+/* ═══════════════════════════════════════
+   INIT
+═══════════════════════════════════════ */
+// Start
+showScene(0);
+canvas.classList.add('visible');
+
+// Unlock audio on first touch
+document.addEventListener('click', () => initAudio(), { once: true });
+document.addEventListener('touchend', () => initAudio(), { once: true });
 </script>
 </body>
 </html>
