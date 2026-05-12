@@ -919,7 +919,7 @@ document.addEventListener('touchend', e => {
   if (dx > 40) return;
   if (dy > 30)       goTo(cur + 1);
   else if (dy < -30) goTo(cur - 1);
-  // tap without swipe: do nothing (user must swipe or see hint)
+  else               goTo(cur + 1); // tap also advances
 }, { passive: true });
 
 // Keyboard
